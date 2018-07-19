@@ -25,12 +25,13 @@ $(document).ready(function(){
   }
 
   function animateSeparator(){
+    if($(".separator_1").position().left + 340 < $(window).width()/2){
     var sep = $(".separator_1");
-    if ((($(window).height()+$(window).scrollTop()) > sep.offset().top) && ($(window).scrollTop() < $(window).height())) {
+    if (($(window).height()+$(window).scrollTop()) > sep.offset().top){
         var i = ($(window).scrollTop() - (sep.offset().top - $(window).height()))*0.675;
         sep.css("left", i);
         $(".separator_2").css("right", i);
-    }
-  }
-
+    };
+  };
+}
 });
