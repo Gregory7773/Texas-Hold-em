@@ -1,0 +1,144 @@
+
+$gray: rgb(66, 66, 66)
+
+
+*
+  box-sizing: border-box
+  margin: 0
+
+header
+  background: black
+  height: 100vh
+  width: 100%
+  position: relative
+  nav
+    position: absolute
+    width: 100%
+    background-color: $gray
+    transition: background-color 300ms
+    display: flex
+    align-items: center
+    @keyframes slide_down
+      0%
+        top: -6vh
+      100%
+        top: 0
+  .animateNav
+    position: fixed
+    background-color: white
+    z-index: 30
+    opacity: 0.9
+    animation:
+      name: slide_down
+      duration: 500ms
+      timing-function: ease-in-out
+
+
+  nav
+    .horizontal_nav
+      display: flex
+      align-items: center
+      float: left
+      position: relative
+      padding: 5px 5px
+      height: 6vh
+      text-decoration: none
+      text-transform: uppercase
+      margin-left: 6%
+      color: white
+      background-color: $gray
+      font-size: 24px
+      transition: background-color 300ms,font-size 300ms,height 300ms,color 300ms
+      &:nth-child(1):hover
+        .vertical_nav_option
+          display: flex
+      &:nth-child(4)
+        margin-right: 40%
+      .vertical_nav
+        position: absolute
+        list-style-type: none
+        padding: 0
+        perspective: 1000px
+        left: -13px
+        top: 57px
+        @keyframes list_animation
+          0%
+            opacity: 0
+            transform:  rotateX(90deg)
+          100%
+            opacity: 1
+            transform:  rotateX(0deg)
+        .vertical_nav_option
+          animation:
+            name: list_animation
+            fill-mode: forwards
+          display: none
+          opacity: 0
+          padding: 10px 10px
+          background-color: $gray
+          justify-content: center
+          align-items: center
+          @for $i from 1 through 4
+              &:nth-child(#{$i})
+                animation-duration: $i * 0.3s
+                animation-delay: $i*0.15 - 0.15s
+
+          a
+            font-size: 24px
+            color: white
+            text-decoration: none
+            background-color: $gray
+          .after_animate_a
+            font-size: 20px
+            color: black
+            background-color: white
+        .after_animate_nav_option
+          background-color: white
+      .after_animate_vertical_nav
+        left: -10px
+        top: 37px
+
+
+    .animate_hor_bar
+      background-color: white
+      color: black
+      font-size: 20px
+      height: 4vh
+    button
+      border: none
+      text-transform: uppercase
+      outline: none
+      cursor: pointer
+      background-color: $gray
+      color: white
+      font-size: 24px
+      transition: background-color 300ms,color 300ms,font-size 300ms
+    .animateButton
+      background-color: white
+      color: black
+      font-size: 20px
+  .logo
+    position: absolute
+    left: 50%
+    top: 40%
+    transform: translateX(-50%)
+main
+  .separator
+    width: 100%
+    height: 20vh
+    position: relative
+    background-color: white
+    img
+      position: absolute
+      top: 50%
+      transform: translateY(-50%)
+    .separator_1
+      left: 0
+    .separator_2
+      right: 0
+
+  .start
+    width: 100%
+    height: 80vh
+    background-color: white
+    text-align: center

@@ -1,0 +1,140 @@
+* {
+  box-sizing: border-box;
+  margin: 0; }
+
+header {
+  background: black;
+  height: 100vh;
+  width: 100%;
+  position: relative; }
+  header nav {
+    position: absolute;
+    width: 100%;
+    background-color: #424242;
+    transition: background-color 300ms;
+    display: flex;
+    align-items: center; }
+@keyframes slide_down {
+  0% {
+    top: -6vh; }
+  100% {
+    top: 0; } }
+  header .animateNav {
+    position: fixed;
+    background-color: white;
+    z-index: 30;
+    opacity: 0.9;
+    animation-name: slide_down;
+    animation-duration: 500ms;
+    animation-timing-function: ease-in-out; }
+  header nav .horizontal_nav {
+    display: flex;
+    align-items: center;
+    float: left;
+    position: relative;
+    padding: 5px 5px;
+    height: 6vh;
+    text-decoration: none;
+    text-transform: uppercase;
+    margin-left: 6%;
+    color: white;
+    background-color: #424242;
+    font-size: 24px;
+    transition: background-color 300ms, font-size 300ms, height 300ms, color 300ms; }
+    header nav .horizontal_nav:nth-child(1):hover .vertical_nav_option {
+      display: flex; }
+    header nav .horizontal_nav:nth-child(4) {
+      margin-right: 40%; }
+    header nav .horizontal_nav .vertical_nav {
+      position: absolute;
+      list-style-type: none;
+      padding: 0;
+      perspective: 1000px;
+      left: -13px;
+      top: 57px; }
+@keyframes list_animation {
+  0% {
+    opacity: 0;
+    transform: rotateX(90deg); }
+  100% {
+    opacity: 1;
+    transform: rotateX(0deg); } }
+      header nav .horizontal_nav .vertical_nav .vertical_nav_option {
+        animation-name: list_animation;
+        animation-fill-mode: forwards;
+        display: none;
+        opacity: 0;
+        padding: 10px 10px;
+        background-color: #424242;
+        justify-content: center;
+        align-items: center; }
+        header nav .horizontal_nav .vertical_nav .vertical_nav_option:nth-child(1) {
+          animation-duration: 0.3s;
+          animation-delay: 0s; }
+        header nav .horizontal_nav .vertical_nav .vertical_nav_option:nth-child(2) {
+          animation-duration: 0.6s;
+          animation-delay: 0.15s; }
+        header nav .horizontal_nav .vertical_nav .vertical_nav_option:nth-child(3) {
+          animation-duration: 0.9s;
+          animation-delay: 0.3s; }
+        header nav .horizontal_nav .vertical_nav .vertical_nav_option:nth-child(4) {
+          animation-duration: 1.2s;
+          animation-delay: 0.45s; }
+        header nav .horizontal_nav .vertical_nav .vertical_nav_option a {
+          font-size: 24px;
+          color: white;
+          text-decoration: none;
+          background-color: #424242; }
+        header nav .horizontal_nav .vertical_nav .vertical_nav_option .after_animate_a {
+          font-size: 20px;
+          color: black;
+          background-color: white; }
+      header nav .horizontal_nav .vertical_nav .after_animate_nav_option {
+        background-color: white; }
+    header nav .horizontal_nav .after_animate_vertical_nav {
+      left: -10px;
+      top: 37px; }
+  header nav .animate_hor_bar {
+    background-color: white;
+    color: black;
+    font-size: 20px;
+    height: 4vh; }
+  header nav button {
+    border: none;
+    text-transform: uppercase;
+    outline: none;
+    cursor: pointer;
+    background-color: #424242;
+    color: white;
+    font-size: 24px;
+    transition: background-color 300ms, color 300ms, font-size 300ms; }
+  header nav .animateButton {
+    background-color: white;
+    color: black;
+    font-size: 20px; }
+  header .logo {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    transform: translateX(-50%); }
+
+main .separator {
+  width: 100%;
+  height: 20vh;
+  position: relative;
+  background-color: white; }
+  main .separator img {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%); }
+  main .separator .separator_1 {
+    left: 0; }
+  main .separator .separator_2 {
+    right: 0; }
+main .start {
+  width: 100%;
+  height: 80vh;
+  background-color: white;
+  text-align: center; }
+
+/*# sourceMappingURL=style.css.map */
