@@ -118,23 +118,152 @@ header {
     top: 40%;
     transform: translateX(-50%); }
 
-main .separator {
-  width: 100%;
-  height: 20vh;
-  position: relative;
-  background-color: white; }
-  main .separator img {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%); }
-  main .separator .separator_1 {
-    left: 0; }
-  main .separator .separator_2 {
-    right: 0; }
-main .start {
-  width: 100%;
-  height: 100vh;
-  background-color: white;
-  text-align: center; }
+main {
+  overflow: hidden; }
+  main .separator {
+    width: 100%;
+    height: 20vh;
+    position: relative;
+    background-color: white; }
+    main .separator img {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%); }
+    main .separator .separator_1 {
+      left: 0; }
+    main .separator .separator_2 {
+      right: 0; }
+  main .start {
+    width: 200%;
+    height: 80vh;
+    background-image: url("../images/start-background.png");
+    display: flex;
+    flex-direction: row; }
+    main .start .start_1 {
+      width: 100%;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-content: space-between;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 1s, opacity 1s; }
+    main .start #section2 {
+      opacity: 0; }
+    main .start .start_1 .setting_1_header {
+      width: 100%;
+      height: 4vh;
+      font-size: 30px;
+      color: white;
+      text-align: center;
+      top: 30vh;
+      background-color: black;
+      opacity: 0;
+      position: absolute; }
+    main .start .start_1 #section_2_header {
+      top: 10vh;
+      opacity: 1; }
+    main .start .start_1 .container1 {
+      position: absolute;
+      top: 38vh;
+      opacity: 0; }
+    main .start .start_1 #section_2_container1 {
+      top: 27vh;
+      opacity: 1;
+      width: 100%; }
+    main .start .start_1 .container1 .container {
+      width: 700px;
+      position: relative;
+      overflow: hidden; }
+    main .start .start_1 .container1 #section_2_container {
+      width: 100%;
+      position: static;
+      height: 25vh; }
+    main .start .start_1 .container1 .container svg {
+      position: absolute;
+      right: 0;
+      height: 5vh;
+      cursor: pointer;
+      z-index: 100;
+      fill: white;
+      top: 50%;
+      transform: translateY(-50%); }
+    main .start .start_1 .container1 .container .left_arrow {
+      left: 0; }
+    main .start .start_1 .container1 .container #main_container {
+      display: flex;
+      flex-direction: row; }
+    main .start .start_1 .container1 .container #main_container2 {
+      display: flex;
+      flex-direction: row;
+      width: 80%;
+      justify-content: space-around;
+      margin: auto; }
+      main .start .start_1 .container1 .container #main_container2 .players {
+        height: 20vh;
+        width: 20%;
+        background-color: #5c5c59;
+        border-radius: 5px;
+        color: #cccccc;
+        font-size: 82px;
+        font-weight: 700;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        line-height: 1;
+        box-shadow: 10px 14px 29px black;
+        text-shadow: 5px 5px 10px black;
+        opacity: 0.9; }
+    main .start .start_1 .container1 .container #main_container .location_container {
+      position: relative;
+      width: 700px; }
+      main .start .start_1 .container1 .container #main_container .location_container .location_name {
+        position: absolute;
+        top: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 40px;
+        color: white;
+        user-select: none; }
+      main .start .start_1 .container1 .container #main_container .location_container .location {
+        width: 700px;
+        height: 40vh;
+        user-select: none;
+        border-radius: 50px; }
+      main .start .start_1 .container1 .container #main_container .location_container .location_blinds {
+        position: absolute;
+        top: 80%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 40px;
+        color: white; }
+    main .start .start_1 .container_next {
+      background-color: black;
+      opacity: 0;
+      width: 100%;
+      height: 10vh;
+      display: flex;
+      align-items: center;
+      position: absolute;
+      top: 82vh; }
+    main .start .start_1 #section_2_container_next {
+      top: 62vh;
+      opacity: 0.8; }
+    main .start .start_1 .container_next .next {
+      width: 10%;
+      outline: none;
+      background-color: #272727;
+      height: 7vh;
+      border-radius: 15px;
+      color: white;
+      font-size: 26px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin: auto; }
 
 /*# sourceMappingURL=style.css.map */
