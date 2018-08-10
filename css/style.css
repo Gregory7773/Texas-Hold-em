@@ -124,7 +124,7 @@ main {
     width: 100%;
     height: 20vh;
     position: relative;
-    background-color: white; }
+    background-color: #dadada; }
     main .separator img {
       position: absolute;
       top: 50%;
@@ -154,11 +154,10 @@ main {
     main .start .start_1 .setting_1_header {
       width: 100%;
       height: 4vh;
-      font-size: 30px;
+      font-size: 43px;
       color: white;
       text-align: center;
       top: 30vh;
-      background-color: black;
       opacity: 0;
       position: absolute; }
     main .start .start_1 #section_2_header {
