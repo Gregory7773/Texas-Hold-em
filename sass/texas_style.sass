@@ -10,6 +10,56 @@ body
     display: flex
     align-items: center
     justify-content: center
+
+    .middle-container
+      position: absolute
+      left: 50%
+      transform: translateX(-50%)
+      top: 23%
+      width: 50%
+      height: 30%
+      .middle-container-relative
+        position: relative
+        width: 100%
+        height: 100%
+        .pot
+          position: absolute
+          top: 10%
+          left: 50%
+          transform: translateX(-50%)
+        .flop-river-turn
+          position: absolute
+          top: 30%
+          display: flex
+          flex-direction: row
+          justify-content: space-around
+          width: 70%
+          transform: translateX(-50%)
+          left: 50%
+          .common-card
+            width: 80px
+            height: 105px
+            border-radius: 7px
+        .coins_wrapper
+          position: absolute
+          top: 80%
+          left: 50%
+          transform: translateX(-50%)
+          width: 19%
+          height: 40%
+          display: flex
+          flex-wrap: wrap
+          justify-content: center
+          .user-coins
+            position: relative
+            width: 100%
+            height: 100%
+            .coin
+              width: 40px
+              height: 40px
+              position: absolute
+
+
     .begin-deal
       bottom: 138px
       left: 63px
@@ -108,15 +158,15 @@ body
       .deal-card-8-3-1
         transform: rotate(185deg)
         left: 29%
-        bottom: 70%
+        bottom: 80%
       .deal-card-8-4-1
         transform: rotate(185deg)
         left: 46%
-        bottom: 70%
+        bottom: 80%
       .deal-card-8-5-1
         transform: rotate(-175deg)
         left: 65%
-        bottom: 70%
+        bottom: 80%
       .deal-card-8-6-1
         transform: rotate(-175deg)
         left: 85%
@@ -136,15 +186,15 @@ body
       .deal-card-8-3-2
         transform: rotate(170deg)
         left: 26%
-        bottom: 67%
+        bottom: 77%
       .deal-card-8-4-2
         transform: rotate(170deg)
         left: 43%
-        bottom: 67%
+        bottom: 77%
       .deal-card-8-5-2
         transform: rotate(-190deg)
         left: 62%
-        bottom: 67%
+        bottom: 77%
       .deal-card-8-6-2
         transform: rotate(-190deg)
         left: 82%
@@ -186,7 +236,7 @@ body
     justify-content: flex-end
     align-items: center
     height: 10%
-    
+
     .button
       width: 150px
       height: 50px
