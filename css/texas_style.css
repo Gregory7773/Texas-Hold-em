@@ -5,6 +5,26 @@
 body {
   height: 100vh;
   background-color: #2e2e30; }
+  body .start-page {
+    position: fixed;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 100vh; }
+    body .start-page .deal-the-cards {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translateX(-50%);
+      color: white;
+      padding: 5px;
+      font-size: 40px;
+      font-weight: 700;
+      border-bottom: 4px solid white;
+      transition: all 600ms;
+      cursor: pointer; }
+      body .start-page .deal-the-cards:hover {
+        top: 48%; }
   body main {
     height: 90%;
     width: 100%;
@@ -226,6 +246,10 @@ body {
             transform: translateX(-50%);
             bottom: -9%;
             box-shadow: 5px 10px 30px black; }
+      body main .container .money-slider {
+        position: absolute;
+        top: 102%;
+        right: -10%; }
   body section {
     display: flex;
     flex-direction: row;
@@ -235,7 +259,6 @@ body {
     body section .button {
       width: 150px;
       height: 50px;
-      display: flex;
       justify-content: center;
       align-items: center;
       background-color: #c66e01;
@@ -243,8 +266,7 @@ body {
       color: white;
       margin-right: 20px;
       border-radius: 10px;
-      cursor: pointer; }
-      body section .button:nth-child(3) {
-        margin-right: 100px; }
+      cursor: pointer;
+      display: flex; }
 
 /*# sourceMappingURL=texas_style.css.map */
