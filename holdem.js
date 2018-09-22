@@ -124,6 +124,7 @@ $(document).ready(function(){
           $("#fold").toggle();
           $("#call").toggle();
           $("#raise").toggle();
+
         }
       },
       flop: function(cards,iteration){
@@ -371,7 +372,7 @@ $(document).ready(function(){
             separate_call = back_call - Players[0].user_call;
           }
           Players[0].money -= separate_call;
-          console.log("Player 0: "+separate_call);
+          console.log("Player 0: "+back_call);
           howManyCoins(separate_call,0);
           Players[0].user_call = back_call;
           return;
@@ -427,10 +428,9 @@ $(document).ready(function(){
                   raise_index = 1;
                   counter = 1;
                   i=1;
-                  console.log("gówno1");
                   setTimeout(function(){
+                    console.log("!!!!!!!!!!!!!!!!!!!!!");
                     userInt.flop(flop_river_turn_cards,iteration);
-                    console.log("gówno2");
                     TheLoop();
                   },1000);
                   return;
@@ -452,7 +452,13 @@ $(document).ready(function(){
                   i = 0;
                   counter = 0;
                   if(Players[0].fold != true){
-                    userInt.toggleButtons(Players);
+                    if(raise_index == counter){
+                      TheLoop();
+                    }
+                    else{
+                      $("#money-slider").attr("min",current_call+5);
+                      userInt.toggleButtons(Players);
+                    }
                   }
                   else{
                     i = 1;
@@ -482,17 +488,23 @@ $(document).ready(function(){
               else{
                 i = 0;
                 counter = 0;
-                if(Players[0].fold != true){
-                  userInt.toggleButtons(Players);
+                if(i == raise_index){
+                  TheLoop();
                 }
                 else{
-                  i = 1;
-                  counter = 1;
-                  TheLoop();
+                  if(Players[0].fold != true){
+                    $("#money-slider").attr("min",current_call+5);
+                    userInt.toggleButtons(Players);
+                  }
+                  else{
+                    i = 1;
+                    counter = 1;
+                    TheLoop();
+                  }
                 }
               }
             },100);
-            }
+          };
           })();
         }
     }
@@ -518,7 +530,7 @@ $(document).ready(function(){
     });
 
     $("#raise").on("click",function(){
-      back_call = $(".money-slider").attr("value");
+      back_call = Number($("#money-slider").val());
     });
 
     $("#all_in").on("click",function(){

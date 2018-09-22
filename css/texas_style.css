@@ -246,7 +246,7 @@ body {
             transform: translateX(-50%);
             bottom: -9%;
             box-shadow: 5px 10px 30px black; }
-      body main .container .money-slider {
+      body main .container #money-slider {
         position: absolute;
         top: 102%;
         right: -10%; }
