@@ -1,3 +1,5 @@
+'use strict';
+
 $(document).ready(function(){
 
   var i = 3;
@@ -6,6 +8,10 @@ $(document).ready(function(){
   var raise_index = 3;
   var counter = 3;
   var iteration = 0;
+  var Players = [];
+
+
+
   var initPositions = (function(){
 
     function initPosCards(n){
@@ -143,13 +149,323 @@ $(document).ready(function(){
 
     }
   })();
+  function ifPlayerDontWantToCheck(current_call){
+    if(current_call == -1){
+      return 65;
+    }
+    else{
+      return current_call;
+    }
+  }
+  var IdentifyPokerHands = function(community_cards,player_number,iteration,current_call){
+    var numbers = [];
+    var colors = [];
+    var repeating_numbers = [];
+    var n;
+    var how_many_pairs = 0;
+    var is_straight = 0;
+    var is_flush = 0;
+    var hands = {
+      one_pair:[false],
+      two_pairs:[false],
+      three_of_a_kind:[false],
+      straight:[false],
+      flush:[false],
+      full_house:[false],
+      four_of_a_kind:[false],
+      straight_flush:[false],
+      royal_flush:[false]
+    };
+    var player = Players[player_number];
 
+    numbers.push(player.Card1x);
+    numbers.push(player.Card2x);
+    colors.push(player.Card1y);
+    colors.push(player.Card2y);
+
+    for(let i = 0;i<13;i++){
+      repeating_numbers[i] = 0;
+    };
+    if(iteration == 1){
+      n=3;
+    }
+    else if(iteration == 2){
+      n=4;
+    }
+    else{
+      n=5;
+    }
+    for(let i = 0;i<n;i++){
+      var card = community_cards[i].split("-");
+      numbers.push(Number(card[0]));
+      colors.push(Number(card[1]));
+    };
+
+
+  for( let i = 0;i<numbers.length;i++){
+    for(let j = 2;j<15;j++){
+      if(numbers[i] == j){
+        repeating_numbers[j-2] += 1;
+        break;
+      }
+    }
+  }
+
+  //One pair
+  for(let i = 0;i<repeating_numbers.length;i++){
+    if(repeating_numbers[i] == 2){
+      hands.one_pair[0] = true;
+      hands.one_pair[1] = i+2;
+    }
+  }
+
+  //two pairs
+  for(let i = 0;i<repeating_numbers.length;i++){
+    if(repeating_numbers[i] == 2){
+      how_many_pairs += 1;
+      hands.two_pairs[how_many_pairs] = i+2
+      if(how_many_pairs == 2){
+        hands.two_pairs[0] = true;
+      }
+    }
+  };
+
+  //three of a kind
+  for(let i = 0;i<repeating_numbers.length;i++){
+    if(repeating_numbers[i] == 3){
+      hands.three_of_a_kind[0] = true;
+      hands.three_of_a_kind[1] = i+2;
+    }
+  };
+
+
+
+  //sort numbers decreasing
+  numbers.sort(function(a,b){return b-a});
+  //remove repeating numbers
+  let end_of_array = false;
+  do{
+    for (var i = 0; i < numbers.length; i++) {
+      if(numbers[i] == numbers[i+1]){
+        numbers.splice(i+1,1);
+        break;
+      }
+      if(i == numbers.length-1){
+        end_of_array = true;
+      }
+    }
+  }
+  while(!end_of_array);
+  //straight
+    for(let i = 0;i<numbers.length;i++){
+      if(is_straight == 4){
+          hands.straight[0] = true;
+          hands.straight[1] = numbers[i-4];
+          break;
+      }
+      else{
+        if(numbers[i] == numbers[i+1]+1){
+          is_straight++;
+        }
+        else{
+          is_straight = 0;
+        }
+      }
+    }
+
+
+  //sort colors increasing
+  colors.sort(function(a,b){return a-b;});
+  //flush
+  for(let i = 0;i<colors.length;i++){
+    if(is_flush == 4){
+        hands.flush[0] = true;
+        break;
+    }
+    else{
+      if(colors[i] == colors[i+1]){
+        is_flush++;
+      }
+      else{
+        is_flush = 0;
+      }
+    }
+  }
+
+// full house
+if(hands.one_pair[0] == true && hands.three_of_a_kind[0] == true){
+  hands.full_house[0] = true;
+  hands.full_house[1] = hands.one_pair[1];
+  hands.full_house[2] = hands.three_of_a_kind[1];
+}
+//four_of_a_kind
+for(let i = 0;i<repeating_numbers.length;i++){
+  if(repeating_numbers[i] == 4){
+    hands.four_of_a_kind[0] = true;
+    hands.four_of_a_kind[1] = i+2;
+  }
+}
+//straight flush and royal flush
+if(hands.straight[0] == true && hands.flush[0] == true){
+  hands.straight_flush[0] = true;
+  if(hands.straight[1] == 14){
+    hands.royal_flush[0] = true;
+  }
+}
+
+//how much money
+let back_call = 0;
+  if(hands.royal_flush[0] ==true){
+    current_call = ifPlayerDontWantToCheck(current_call);
+    player.user_hand = "royal_flush";
+    console.log(player_number+" royal_flush" );
+    back_call = player.money;
+    player.all_in = true;
+    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+    return back_call;
+  }
+  else if(hands.straight_flush[0] ==true){
+    current_call = ifPlayerDontWantToCheck(current_call);
+    player.user_hand = "straigth_flush";
+    player.hand_card_strength1 = hands.straight[1];
+    console.log(player_number+" straigth_flush" );
+    back_call = player.money;
+    player.all_in = true;
+    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+    return back_call;
+  }
+  else if(hands.four_of_a_kind[0] ==true){
+    current_call = ifPlayerDontWantToCheck(current_call);
+    player.user_hand = "four_of_a_kind";
+    player.hand_card_strength1 = hands.four_of_a_kind[1];
+    console.log(player_number+" four_of_a_kind" );
+    back_call = player.money;
+    player.all_in = true;
+    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+    return back_call;
+  }
+  else if(hands.full_house[0] ==true){
+    current_call = ifPlayerDontWantToCheck(current_call);
+    player.user_hand = "full_house";
+    player.hand_card_strength1 = hands.full_house[1];
+    player.hand_card_strength2 = hands.full_house[2];
+    console.log(player_number+" full_house");
+    back_call = player.money;
+    player.all_in = true;
+    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+    return back_call;
+  }
+  else if(hands.flush[0] ==true){
+    current_call = ifPlayerDontWantToCheck(current_call);
+    player.user_hand = "flush";
+    console.log(player_number+" flush");
+    back_call = player.money;
+    player.all_in = true;
+    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+    return back_call;
+  }
+  else if(hands.straight[0] ==true){
+    current_call = ifPlayerDontWantToCheck(current_call);
+    player.user_hand = "straigth";
+    player.hand_card_strength1 = hands.straight[1];
+    console.log(player_number+" STRAIGHT");
+    if(current_call<player.money*0.4){
+      back_call = current_call * 2;
+    }
+    else{
+      if(current_call>=player.money){
+        back_call = player.money;
+        player.all_in = true;
+      }
+      else{
+        back_call = current_call;
+      }
+    }
+    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+    return back_call;
+  }
+
+  else if(hands.three_of_a_kind[0] ==true){
+    current_call = ifPlayerDontWantToCheck(current_call);
+    player.user_hand = "three_of_a_kind";
+    player.hand_card_strength1 = hands.three_of_a_kind[1];
+    console.log(player_number+" three_of_a_kind");
+    if(current_call<player.money*0.3){
+      back_call = Math.round(current_call*1.7);
+    }
+    else{
+      if(current_call>=player.money){
+        back_call = player.money;
+        player.all_in = true;
+      }
+      else{
+        back_call = current_call;
+      }
+    }
+    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+    return back_call;
+  }
+
+  else if(hands.two_pairs[0] ==true){
+    current_call = ifPlayerDontWantToCheck(current_call);
+    player.user_hand = "two_pairs";
+    player.hand_card_strength1 = hands.two_pairs[1];
+    player.hand_card_strength2 = hands.two_pairs[2];
+    console.log(player_number+" two_pairs");
+    if(current_call<player.money*0.3){
+      back_call = Math.round(current_call*1.5);
+    }
+    else{
+      if(current_call<=player.money/3){
+        back_call = current_call;
+        player.fold = true;
+      }
+      else{
+        back_call = current_call;
+      }
+    }
+    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+    return back_call;
+  }
+
+  else if(hands.one_pair[0] ==true){
+    current_call = ifPlayerDontWantToCheck(current_call);
+    player.user_hand = "one_pair";
+    player.hand_card_strength1 = hands.one_pair[1];
+    console.log(player_number+" one_pair" );
+    if(current_call<player.money*0.25){
+      back_call = Math.round(current_call*1.25);
+    }
+    else{
+      if(current_call<=player.money/4){
+        back_call = current_call;
+        player.fold = true;
+      }
+      else{
+        back_call = current_call;
+      }
+    }
+    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+    return back_call;
+  }
+  else{
+    if(current_call == -1){
+      console.log("CHECK");
+      return current_call;
+
+    }
+    else {
+      player.fold = true;
+      return current_call;
+    }
+  }
+}
 
   var Cards = (function(userInt){
 
     var x,y;
     var time_out_variable = 1;
-    var player = function (Card1x,Card1y,Card2x,Card2y,money,fold,user_call,all_in){
+    var player = function (Card1x,Card1y,Card2x,Card2y,money,fold,user_call,all_in,user_hand,hand_card_strength1,hand_card_strength2){
       this.Card1x = Card1x;
       this.Card1y = Card1y;
       this.Card2x = Card2x;
@@ -158,9 +474,12 @@ $(document).ready(function(){
       this.fold = fold;
       this.user_call = user_call;
       this.all_in = all_in;
+      this.user_hand = user_hand;
+      this.hand_card_strength1 = hand_card_strength1;
+      this.hand_card_strength2 = hand_card_strength2;
+
     };
 
-    var Players = [];
     var RandomCards = [];
     var flop_river_turn_cards = [];
 
@@ -214,69 +533,53 @@ $(document).ready(function(){
       this.Card2y = four;
     };
 
-    function howManyCoins(back_call,id){
-      var tenK,fiveK,oneK,fiveH,oneH,fifteen,twenty,ten,five,modulo;
-      var coinsArray = [];
-      tenK = Math.floor(back_call/10000);
-      modulo = back_call%10000;
-      fiveK = Math.floor(modulo/5000);
-      modulo = modulo%5000;
-      oneK = Math.floor(modulo/1000);
-      modulo = modulo%1000;
-      fiveH = Math.floor(modulo/500);
-      modulo = modulo%500;
-      oneH = Math.floor(modulo/100);
-      modulo = modulo%100;
-      fifteen = Math.floor(modulo/50);
-      modulo = modulo%50;
-      twenty = Math.floor(modulo/20);
-      modulo = modulo%20;
-      ten = Math.floor(modulo/10);
-      modulo = modulo%10;
-      five = Math.floor(modulo/5);
-      modulo = modulo%5;
-      coinsArray = [tenK,fiveK,oneK,fiveH,oneH,fifteen,twenty,ten,five]
-
-
-      addCoins(coinsArray,id);
-    }
-
-    function playerChoice(element,current_call,id,check){
-      var back_call,separate_call;
+    function playerChoice(element,current_call,player_id){
+      var back_call;
       if((element.Card1x == element.Card2x)&&(element.Card1x > 7)){
-        back_call = element.money;
-        separate_call = back_call - element.user_call;
-        element.money -= separate_call;
-        console.log(Players.indexOf(element)+" "+back_call);
-        howManyCoins(separate_call,id);
-        element.user_call = current_call;
-        element.all_in = true;
+        back_call = Math.round(element.money/3);
+        Cards.playerMoneyUpdate(element,current_call,player_id,back_call);
         return back_call;
       }
       if(element.Card1x >9 && element.Card2x > 9 && current_call < 0.2*element.money){
         back_call = 2*(current_call);
-        separate_call = back_call - element.user_call;
-        element.money -= separate_call;
-        console.log(Players.indexOf(element)+" "+back_call);
-        howManyCoins(separate_call,id);
-        element.user_call = current_call;
+        Cards.playerMoneyUpdate(element,current_call,player_id,back_call);
         return back_call;
       }
-      if((element.Card1x > 9 || element.Card2x > 9) && current_call < 0.5*element.money){
+      if((element.Card1x > 2 || element.Card2x > 2) && current_call < 0.5*element.money){
         back_call = current_call;
-        separate_call = back_call - element.user_call;
-        element.money -= separate_call;
-        console.log(Players.indexOf(element)+" "+back_call);
-        console.log(Players);
-        howManyCoins(separate_call,id);
-        element.user_call = current_call;
+        Cards.playerMoneyUpdate(element,current_call,player_id,back_call);
         return back_call;
       }
       element.fold = true;
       return current_call;
     }
 
+    function howManyCoins(back_call,id){
+     var tenK,fiveK,oneK,fiveH,oneH,fifteen,twenty,ten,five,modulo;
+     var coinsArray = [];
+     tenK = Math.floor(back_call/10000);
+     modulo = back_call%10000;
+     fiveK = Math.floor(modulo/5000);
+     modulo = modulo%5000;
+     oneK = Math.floor(modulo/1000);
+     modulo = modulo%1000;
+     fiveH = Math.floor(modulo/500);
+     modulo = modulo%500;
+     oneH = Math.floor(modulo/100);
+     modulo = modulo%100;
+     fifteen = Math.floor(modulo/50);
+     modulo = modulo%50;
+     twenty = Math.floor(modulo/20);
+     modulo = modulo%20;
+     ten = Math.floor(modulo/10);
+     modulo = modulo%10;
+     five = Math.floor(modulo/5);
+     modulo = modulo%5;
+     coinsArray = [tenK,fiveK,oneK,fiveH,oneH,fifteen,twenty,ten,five]
 
+
+     addCoins(coinsArray,id);
+   }
     function addCoins(coinsArray,id){
       var coin_value;
       var child_number = id+1;
@@ -360,16 +663,25 @@ $(document).ready(function(){
     };
 
     return{
+       playerMoneyUpdate:function(element,current_call,player_id,back_call){
+         let separate_call = back_call - element.user_call;
+         element.money -= separate_call;
+         console.log(player_id+" "+back_call);
+         howManyCoins(separate_call,player_id);
+         element.user_call = current_call;
+       },
+
       mainPlayerChoice: function(){
+        let separate_call;
         if(Players[0].fold == true){
           return;
         }
         else{
           if(Players[0].all_in == true){
-            separate_call = Players[0].money;
+             separate_call = Players[0].money;
           }
           else{
-            separate_call = back_call - Players[0].user_call;
+             separate_call = back_call - Players[0].user_call;
           }
           Players[0].money -= separate_call;
           console.log("Player 0: "+back_call);
@@ -413,7 +725,7 @@ $(document).ready(function(){
                 if(iteration < 3){
                   cleanOutUserCall();
                   if(anyPlayersLeft()){
-                    current_call = 65;
+                    current_call = -1;
                   }
                   else{
                     return;
@@ -422,7 +734,7 @@ $(document).ready(function(){
                     back_call = 0;
                   }
                   else{
-                    back_call = 65;
+                    back_call = -1;
                   }
                   iteration++;
                   raise_index = 1;
@@ -472,13 +784,21 @@ $(document).ready(function(){
               setTimeout(function(){
 
                 if(i>0){
-                  back_call = playerChoice(Players[i],current_call,i,back_call);
+                  if(iteration>0){
+                    back_call = IdentifyPokerHands(flop_river_turn_cards,i,iteration,current_call);
+                  }
+                  else{
+                    back_call = playerChoice(Players[i],current_call,i,back_call);
+                  }
                 };
 
                 if(back_call>current_call){
                   current_call = back_call;
                   raise_index = counter;
-                };
+                }
+                else if(back_call == -1){
+                  current_call = back_call;
+                }
               counter +=1;
               i += 1;
               if(i < Players.length)
