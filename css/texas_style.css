@@ -4,7 +4,7 @@
 
 body {
   height: 100vh;
-  background-color: #2e2e30; }
+  background-color: #0e4b2c; }
   body .start-page {
     position: fixed;
     z-index: 100;
@@ -30,7 +30,10 @@ body {
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center; }
+    justify-content: center;
+    background-image: url("../images/table.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat; }
     body main .middle-container {
       position: absolute;
       left: 50%;
@@ -57,8 +60,8 @@ body {
           transform: translateX(-50%);
           left: 50%; }
           body main .middle-container .middle-container-relative .flop-river-turn .common-card {
-            width: 80px;
-            height: 105px;
+            width: 100px;
+            height: 135px;
             border-radius: 7px; }
         body main .middle-container .middle-container-relative .coins_wrapper {
           position: absolute;
@@ -84,30 +87,26 @@ body {
       opacity: 1;
       display: block; }
     body main .container {
-      width: 1400px;
-      height: 750px;
-      background-image: url("../images/table.png");
-      background-position: center center;
-      background-size: 1400px 750px;
-      background-repeat: no-repeat;
+      width: 100%;
+      height: 100%;
       position: relative; }
       body main .container .card {
         position: absolute;
         bottom: 14%;
         left: 47%;
-        width: 80px;
-        height: 105px;
+        width: 100px;
+        height: 135px;
         border-radius: 7px;
         transition: transform 300ms, left 300ms, bottom 300ms;
         transition-timing-function: ease-out; }
       body main .container .deal-player-card-1 {
         transform: rotate(5deg);
-        left: 47%;
-        bottom: 15%; }
+        left: 50%;
+        bottom: 6%; }
       body main .container .deal-player-card-2 {
         transform: rotate(-10deg);
-        left: 44%;
-        bottom: 12%; }
+        left: 47%;
+        bottom: 4%; }
       body main .container .deal-card-3-1-1 {
         transform: rotate(185deg);
         left: 20%;
@@ -167,68 +166,79 @@ body {
       body main .container .deal-card-8-1-1 {
         transform: rotate(185deg);
         left: 21%;
-        bottom: 18%; }
+        bottom: 12%; }
       body main .container .deal-card-8-2-1 {
         transform: rotate(185deg);
-        left: 13%;
+        left: 9%;
         bottom: 48%; }
       body main .container .deal-card-8-3-1 {
         transform: rotate(185deg);
-        left: 29%;
+        left: 21%;
         bottom: 80%; }
       body main .container .deal-card-8-4-1 {
         transform: rotate(185deg);
-        left: 46%;
+        left: 50%;
         bottom: 80%; }
       body main .container .deal-card-8-5-1 {
         transform: rotate(-175deg);
-        left: 65%;
+        left: 75%;
         bottom: 80%; }
       body main .container .deal-card-8-6-1 {
         transform: rotate(-175deg);
-        left: 85%;
+        left: 90%;
         bottom: 48%; }
       body main .container .deal-card-8-7-1 {
         transform: rotate(-175deg);
-        left: 79%;
-        bottom: 18%; }
+        left: 74%;
+        bottom: 12%; }
       body main .container .deal-card-8-1-2 {
         transform: rotate(170deg);
         left: 18%;
-        bottom: 15%; }
+        bottom: 9%; }
       body main .container .deal-card-8-2-2 {
         transform: rotate(170deg);
-        left: 10%;
+        left: 6%;
         bottom: 45%; }
       body main .container .deal-card-8-3-2 {
         transform: rotate(170deg);
-        left: 26%;
+        left: 17%;
         bottom: 77%; }
       body main .container .deal-card-8-4-2 {
         transform: rotate(170deg);
-        left: 43%;
+        left: 47%;
         bottom: 77%; }
       body main .container .deal-card-8-5-2 {
         transform: rotate(-190deg);
-        left: 62%;
+        left: 71%;
         bottom: 77%; }
       body main .container .deal-card-8-6-2 {
         transform: rotate(-190deg);
-        left: 82%;
+        left: 89%;
         bottom: 45%; }
       body main .container .deal-card-8-7-2 {
         transform: rotate(-190deg);
-        left: 76%;
-        bottom: 15%; }
+        left: 71%;
+        bottom: 9%; }
       body main .container #player {
         transform: translateX(-50%); }
       body main .container .user-container {
         position: absolute; }
         body main .container .user-container .inner-user-container {
           position: relative; }
+          body main .container .user-container .inner-user-container .player-decision {
+            position: absolute;
+            top: -31px;
+            left: 84px;
+            padding: 5px 15px;
+            background-color: #a1c404;
+            opacity: 0.7;
+            font-size: 36px;
+            font-weight: 700;
+            color: black;
+            border-radius: 12px; }
           body main .container .user-container .inner-user-container img {
-            height: 100px;
-            width: 100px;
+            height: 70px;
+            width: 70px;
             border-radius: 70px;
             box-shadow: 5px 10px 30px;
             border: 2px solid gray; }
@@ -248,8 +258,8 @@ body {
             box-shadow: 5px 10px 30px black; }
       body main .container #money-slider {
         position: absolute;
-        top: 102%;
-        right: -10%; }
+        top: 90%;
+        right: 5%; }
   body section {
     display: flex;
     flex-direction: row;
@@ -261,7 +271,8 @@ body {
       height: 50px;
       justify-content: center;
       align-items: center;
-      background-color: #c66e01;
+      background-color: #4d6347;
+      opacity: 0.8;
       font-size: 28px;
       color: white;
       margin-right: 20px;
