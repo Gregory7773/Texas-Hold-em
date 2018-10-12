@@ -9,7 +9,7 @@ $(document).ready(function(){
   var counter = 3;
   var iteration = 0;
   var Players = [];
-
+  var pot = 0;
 
 
   var initPositions = (function(){
@@ -60,10 +60,10 @@ $(document).ready(function(){
     function initPosPlayers(n){
       $("#player").css({"bottom":"-2%","left":"50%"});
       $("#user1").css({"bottom":"1%","left":"17%"});
-      $("#user2").css({"bottom":"40%","left":"5%"});
+      $("#user2").css({"bottom":"40%","left":"8%"});
       $("#user3").css({"bottom":"89%","left":"18%"});
       $("#user4").css({"bottom":"89%","left":"46%"});
-      $("#user5").css({"bottom":"89%","left":"78%"});
+      $("#user5").css({"bottom":"89%","left":"70%"});
       $("#user6").css({"bottom":"40%","left":"94%"});
       $("#user7").css({"bottom":"1%","left":"74%"});
     }
@@ -83,6 +83,11 @@ $(document).ready(function(){
       initialPositions: function(n){
         initPosPlayers(n);
         initPosCoins(n);
+      },
+      resetCoinsAnimation:function(n){
+        $(".user-coins").empty();
+        initPosCoins(n);
+
       },
       initCardsPositions: function(n){
         initPosCards(n);
@@ -145,6 +150,32 @@ $(document).ready(function(){
         else{
           $(".flop-river-turn").append('<img class = "common-card" src = "images/cards/'+cards[4]+'.png">')
         }
+      },
+      showPlayerDecision: function(current_call,back_call,player_num = 0){
+        $(".player-decision").eq(player_num).remove();
+        $(".inner-user-container").eq(player_num).prepend("<div class = 'player-decision'></div>");
+        var element = $(".player-decision").eq(player_num);
+        if(Players[player_num].all_in == true){
+          element.html("ALL IN");
+        }
+        else if(Players[player_num].fold == true){
+          element.html("FOLD");
+        }
+        else if(back_call == -1){
+          element.html("CHECK");
+        }
+        else if(back_call == current_call){
+          element.html("CALL");
+        }
+        else if(back_call>current_call){
+          element.html("RAISE");
+        }
+      },
+      animateCoins:function(){
+        $(".coins_wrapper").css({"top":"92%","left":"55%"});
+      },
+      updatePotValue:function(){
+        $(".pot").html("Pot: "+pot);
       }
 
     }
@@ -522,7 +553,7 @@ let back_call = 0;
   }
 }
 
-  var Cards = (function(userInt){
+  var Cards = (function(userInt,initialPositions){
 
     var x,y;
     var time_out_variable = 1;
@@ -640,32 +671,33 @@ let back_call = 0;
 
      addCoins(coinsArray,id);
    }
-    function addCoins(coinsArray,id){
+    function addCoins(coinsArray,id = "pot"){
       var coin_value;
       var child_number = id+1;
+      var object;
 
       coinsArray.forEach(function(element,index){
         switch(index){
           case 0:
-            coin_value = 10000;
+            coin_value = 10000
             break;
           case 1:
-            coin_value = 5000;
+            coin_value = 5000
             break;
           case 2:
-            coin_value = 1000;
+            coin_value = 1000
             break;
           case 3:
-            coin_value = 500;
+            coin_value = 500
             break;
           case 4:
-            coin_value = 100;
+            coin_value = 100
             break;
           case 5:
-            coin_value = 50;
+            coin_value = 50
             break;
           case 6:
-            coin_value = 20;
+            coin_value = 20
             break;
           case 7:
             coin_value = 10
@@ -674,18 +706,22 @@ let back_call = 0;
             coin_value = 5
             break;
         }
+        object = id =="pot" ? ".coins-pot-relative":"#coin-user-"+child_number;
         for(var i = 0;i<element;i++){
-          var x = count();
-          var y = count();
-          $("#coin-user-"+child_number).append('<img class = "coin" src = "images/coins/'+coin_value+'.png">');
-          $("#coin-user-"+child_number+" .coin:last-child").css({left:x+"px",top:y+"px"});
+          $(object).append('<img class = "coin" src = "images/coins/'+coin_value+'.png">');
         }
       })
+      count(object);
     }
 
-    function count(){
-      return Math.round(Math.random()*80);
-    }
+    function count(object){
+
+      $(object+" .coin").each(function(){
+        var x = Math.round(Math.random()*80);
+        var y = Math.round(Math.random()*80);
+        $(this).css({left:x+"px",top:y+"px"});
+    });
+  }
 
     function anyPlayersLeft(){
       var players_left = 0;
@@ -725,6 +761,7 @@ let back_call = 0;
     return{
        playerMoneyUpdate:function(element,current_call,player_id,back_call){
          let separate_call = back_call - element.user_call;
+         pot += separate_call;
          element.money -= separate_call;
          console.log(player_id+" "+back_call);
          howManyCoins(separate_call,player_id);
@@ -743,6 +780,7 @@ let back_call = 0;
           else{
              separate_call = back_call - Players[0].user_call;
           }
+          pot += separate_call;
           Players[0].money -= separate_call;
           console.log("Player 0: "+back_call);
           howManyCoins(separate_call,0);
@@ -894,12 +932,16 @@ let back_call = 0;
                   raise_index = 1;
                   counter = 1;
                   i=1;
+                  userInt.animateCoins();
                   setTimeout(function(){
                     console.log("!!!!!!!!!!!!!!!!!!!!!");
+                    initialPositions.resetCoinsAnimation(8);
+                    howManyCoins(pot);
+                    userInt.updatePotValue();
                     userInt.flop(flop_river_turn_cards,iteration);
                     IdentifyPokerHands(flop_river_turn_cards,0,iteration,0);
                     TheLoop();
-                  },10);
+                  },1000);
                   return;
                 }
                 else{
@@ -946,7 +988,9 @@ let back_call = 0;
                   else{
                     back_call = playerChoice(Players[i],current_call,i,back_call);
                   }
+                  userInt.showPlayerDecision(current_call,back_call,i);
                 };
+
 
                 if(back_call>current_call){
                   current_call = back_call;
@@ -979,12 +1023,12 @@ let back_call = 0;
                   }
                 }
               }
-            },100);
+            },1000);
           };
           })();
         }
     }
-  })(UserInterface);
+  })(UserInterface,initPositions);
 
 
 
@@ -1016,6 +1060,7 @@ let back_call = 0;
     $(".button").on("click",function(){
       UserInter.toggleButtons(Players);
       Cards.mainPlayerChoice();
+      UserInter.showPlayerDecision(current_call,back_call,0);
       Cards.queue();
     });
 
@@ -1031,7 +1076,7 @@ let back_call = 0;
     UserInter.showPlayerCards(Players,n);
     initPos.initialPositions(n);
     $(".button").toggle();
-
+    $('.player-decision').toggle();
 
   })(initPositions,Cards,UserInterface);
 });

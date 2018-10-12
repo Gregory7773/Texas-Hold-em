@@ -4,7 +4,7 @@
 
 body {
   height: 100vh;
-  background-color: #0e4b2c; }
+  background-color: #1a3e2c; }
   body .start-page {
     position: fixed;
     z-index: 100;
@@ -49,7 +49,10 @@ body {
           position: absolute;
           top: 10%;
           left: 50%;
-          transform: translateX(-50%); }
+          transform: translateX(-50%);
+          color: #f3b81d;
+          font-weight: 700;
+          font-size: 30px; }
         body main .middle-container .middle-container-relative .flop-river-turn {
           position: absolute;
           top: 30%;
@@ -63,10 +66,21 @@ body {
             width: 100px;
             height: 135px;
             border-radius: 7px; }
+        body main .middle-container .middle-container-relative .coins-pot-wrapper {
+          position: absolute;
+          left: 46%;
+          top: 92%; }
+          body main .middle-container .middle-container-relative .coins-pot-wrapper .coins-pot-relative {
+            position: relative;
+            height: 100px;
+            width: 150px; }
+            body main .middle-container .middle-container-relative .coins-pot-wrapper .coins-pot-relative .coin {
+              width: 40px;
+              height: 40px;
+              position: absolute; }
         body main .middle-container .middle-container-relative .coins_wrapper {
           position: absolute;
-          top: 80%;
-          left: 50%;
+          transition: top 1s, left 1s;
           transform: translateX(-50%);
           width: 19%;
           height: 40%;
@@ -92,7 +106,7 @@ body {
       position: relative; }
       body main .container .card {
         position: absolute;
-        bottom: 14%;
+        bottom: 25%;
         left: 47%;
         width: 100px;
         height: 135px;
@@ -225,17 +239,26 @@ body {
         position: absolute; }
         body main .container .user-container .inner-user-container {
           position: relative; }
+@keyframes player_decision {
+  0% {
+    transform: rotate(90deg); }
+  40% {
+    transform: rotate(-20deg); }
+  100% {
+    transform: rotate(0deg); } }
           body main .container .user-container .inner-user-container .player-decision {
             position: absolute;
-            top: -31px;
-            left: 84px;
+            top: 31px;
+            left: -133px;
             padding: 5px 15px;
             background-color: #a1c404;
             opacity: 0.7;
             font-size: 36px;
             font-weight: 700;
             color: black;
-            border-radius: 12px; }
+            border-radius: 12px;
+            animation-name: player_decision;
+            animation-duration: 600ms; }
           body main .container .user-container .inner-user-container img {
             height: 70px;
             width: 70px;

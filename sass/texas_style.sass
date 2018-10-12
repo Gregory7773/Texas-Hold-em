@@ -3,7 +3,7 @@
   margin: 0
 body
   height: 100vh
-  background-color: #0e4b2c
+  background-color: #1a3e2c
   .start-page
     position: fixed
     z-index: 100
@@ -52,6 +52,10 @@ body
           top: 10%
           left: 50%
           transform: translateX(-50%)
+          color: #f3b81d
+          font-weight: 700
+          font-size: 30px
+          
         .flop-river-turn
           position: absolute
           top: 30%
@@ -65,10 +69,21 @@ body
             width: 100px
             height: 135px
             border-radius: 7px
+        .coins-pot-wrapper
+          position: absolute
+          left: 46%
+          top: 92%
+          .coins-pot-relative
+            position: relative
+            height: 100px
+            width: 150px
+            .coin
+              width: 40px
+              height: 40px
+              position: absolute
         .coins_wrapper
           position: absolute
-          top: 80%
-          left: 50%
+          transition: top 1s,left 1s
           transform: translateX(-50%)
           width: 19%
           height: 40%
@@ -84,7 +99,6 @@ body
               height: 40px
               position: absolute
 
-
     .begin-deal
       bottom: 138px
       left: 63px
@@ -96,7 +110,7 @@ body
       position: relative
       .card
         position: absolute
-        bottom: 14%
+        bottom: 25%
         left: 47%
         width: 100px
         height: 135px
@@ -231,10 +245,17 @@ body
         position: absolute
         .inner-user-container
           position: relative
+          @keyframes player_decision
+            0%
+              transform: rotate(90deg)
+            40%
+              transform: rotate(-20deg)
+            100%
+              transform: rotate(0deg)
           .player-decision
             position: absolute
-            top: -31px
-            left: 84px
+            top: 31px
+            left: -133px
             padding: 5px 15px
             background-color: #a1c404
             opacity: 0.7
@@ -242,6 +263,9 @@ body
             font-weight: 700
             color: black
             border-radius: 12px
+            animation:
+              name: player_decision
+              duration: 600ms
           img
             height: 70px
             width: 70px
