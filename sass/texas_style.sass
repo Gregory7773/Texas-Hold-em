@@ -49,41 +49,48 @@ body
         height: 100%
         .pot
           position: absolute
-          top: 10%
+          top: 4%
           left: 50%
           transform: translateX(-50%)
-          color: #f3b81d
+          background-image: linear-gradient(to right,#eecd1c,#d99c51)
+          -webkit-background-clip: text
           font-weight: 700
-          font-size: 30px
-          
+          font-size: 46px
+          -webkit-text-fill-color: transparent
         .flop-river-turn
           position: absolute
           top: 30%
-          display: flex
-          flex-direction: row
-          justify-content: space-around
           width: 70%
           transform: translateX(-50%)
-          left: 50%
-          .common-card
-            width: 100px
-            height: 135px
-            border-radius: 7px
+          left: 57%
+          .flop-river-turn-relative
+            position: relative
+            width: 100%
+            .common-card
+              width: 100px
+              height: 135px
+              border-radius: 7px
+              position: absolute
+              left: 0
+              transition: left 500ms, opacity 500ms
+              opacity: 0
+
         .coins-pot-wrapper
           position: absolute
-          left: 46%
+          left: 31%
           top: 92%
           .coins-pot-relative
             position: relative
-            height: 100px
-            width: 150px
+            float: left
             .coin
-              width: 40px
-              height: 40px
+              width: 60px
+              height: 60px
               position: absolute
+
+
         .coins_wrapper
           position: absolute
-          transition: top 1s,left 1s
+          transition: top 500ms,left 500ms
           transform: translateX(-50%)
           width: 19%
           height: 40%
@@ -95,9 +102,10 @@ body
             width: 100%
             height: 100%
             .coin
-              width: 40px
-              height: 40px
+              width: 60px
+              height: 60px
               position: absolute
+              transition: all 500ms
 
     .begin-deal
       bottom: 138px
@@ -115,7 +123,7 @@ body
         width: 100px
         height: 135px
         border-radius: 7px
-        transition: transform 300ms, left 300ms, bottom 300ms
+        transition: transform 300ms, left 300ms, bottom 300ms,opacity 500ms
         transition-timing-function: ease-out
 
       .deal-player-card-1
@@ -200,8 +208,8 @@ body
         bottom: 80%
       .deal-card-8-5-1
         transform: rotate(-175deg)
-        left: 75%
-        bottom: 80%
+        left: 80%
+        bottom: 73%
       .deal-card-8-6-1
         transform: rotate(-175deg)
         left: 90%
@@ -228,11 +236,11 @@ body
         bottom: 77%
       .deal-card-8-5-2
         transform: rotate(-190deg)
-        left: 71%
-        bottom: 77%
+        left: 77%
+        bottom: 70%
       .deal-card-8-6-2
         transform: rotate(-190deg)
-        left: 89%
+        left: 86%
         bottom: 45%
       .deal-card-8-7-2
         transform: rotate(-190deg)

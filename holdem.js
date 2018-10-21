@@ -61,22 +61,22 @@ $(document).ready(function(){
       $("#player").css({"bottom":"-2%","left":"50%"});
       $("#user1").css({"bottom":"1%","left":"17%"});
       $("#user2").css({"bottom":"40%","left":"8%"});
-      $("#user3").css({"bottom":"89%","left":"18%"});
-      $("#user4").css({"bottom":"89%","left":"46%"});
-      $("#user5").css({"bottom":"89%","left":"70%"});
+      $("#user3").css({"bottom":"91%","left":"11%"});
+      $("#user4").css({"bottom":"91%","left":"43%"});
+      $("#user5").css({"bottom":"91%","left":"88%"});
       $("#user6").css({"bottom":"40%","left":"94%"});
       $("#user7").css({"bottom":"1%","left":"74%"});
     }
 
     function initPosCoins(n){
-      $("#user-1-coins").css({"top":"165%","left":"68%"});
-      $("#user-2-coins").css({"top":"165%","left":"10%"});
-      $("#user-3-coins").css({"top":"0%","left":"-31%"});
-      $("#user-4-coins").css({"top":"-36%","left":"-8%"});
-      $("#user-5-coins").css({"top":"-26%","left":"62%"});
-      $("#user-6-coins").css({"top":"-26%","left":"110%"});
-      $("#user-7-coins").css({"top":"57%","left":"104%"});
-      $("#user-8-coins").css({"top":"132%","left":"130%"});
+      $("#user-1-coins").css({"top":"139%","left":"52%"});
+      $("#user-2-coins").css({"top":"114%","left":"10%"});
+      $("#user-3-coins").css({"top":"34%","left":"-6%"});
+      $("#user-4-coins").css({"top":"-10%","left":"10%"});
+      $("#user-5-coins").css({"top":"-23%","left":"70%"});
+      $("#user-6-coins").css({"top":"-8%","left":"110%"});
+      $("#user-7-coins").css({"top":"57%","left":"115%"});
+      $("#user-8-coins").css({"top":"120%","left":"96%"});
     }
 
     return {
@@ -86,6 +86,7 @@ $(document).ready(function(){
       },
       resetCoinsAnimation:function(n){
         $(".user-coins").empty();
+        $(".coins-pot-wrapper").empty();
         initPosCoins(n);
 
       },
@@ -107,18 +108,18 @@ $(document).ready(function(){
 
 
     return{
-      showPlayerCards: function(players,n){
-        var insertCardHTML = '<img class = "card" src = "images/cards/'+players[0].Card1x+'-'+players[0].Card1y+'.png">'
+      showPlayerCards: function(n){
+        var insertCardHTML = '<img class = "card" id="'+Players[0].Card1x+'-'+Players[0].Card1y+'" src = "images/cards/'+Players[0].Card1x+'-'+Players[0].Card1y+'.png">';
         $("#player").before(insertCardHTML);
 
         for(var i = 0 ; i< (n-2);i++){
-          $("#player").before('<img class = "card" src = "images/cards/card back.png">')
+          $("#player").before('<img class = "card" id="'+Players[i+1].Card1x+'-'+Players[i+1].Card1y+'" src = "images/cards/card back.png">');
         }
-        insertCardHTML = '<img class = "card" src = "images/cards/'+players[0].Card2x+'-'+players[0].Card2y+'.png">'
+        insertCardHTML = '<img class = "card" id="'+Players[0].Card2x+'-'+Players[0].Card2y+'" src = "images/cards/'+Players[0].Card2x+'-'+Players[0].Card2y+'.png">';
         $("#player").before(insertCardHTML);
 
         for(var i = 0 ; i< (n-2);i++){
-          $("#player").before('<img class = "card" src = "images/cards/card back.png">')
+          $("#player").before('<img class = "card" id="'+Players[i+1].Card2x+'-'+Players[i+1].Card2y+'" src = "images/cards/card back.png">');
         }
         animateCards();
       },
@@ -140,15 +141,15 @@ $(document).ready(function(){
       },
       flop: function(cards,iteration){
         if(iteration == 1){
-          $(".flop-river-turn").append('<img class = "common-card" src = "images/cards/'+cards[0]+'.png">');
-          $(".flop-river-turn").append('<img class = "common-card" src = "images/cards/'+cards[1]+'.png">');
-          $(".flop-river-turn").append('<img class = "common-card" src = "images/cards/'+cards[2]+'.png">');
+          for (var i = 0; i < 3; i++) {
+            $(".common-card").eq(i).css({opacity:1,left:110*i+"px"});
+          }
         }
         else if(iteration == 2){
-          $(".flop-river-turn").append('<img class = "common-card" src = "images/cards/'+cards[3]+'.png">')
+          $(".common-card").eq(3).css({opacity:1,left:330+"px"});
         }
         else{
-          $(".flop-river-turn").append('<img class = "common-card" src = "images/cards/'+cards[4]+'.png">')
+          $(".common-card").eq(4).css({opacity:1,left:440+"px"});
         }
       },
       showPlayerDecision: function(current_call,back_call,player_num = 0){
@@ -172,12 +173,51 @@ $(document).ready(function(){
         }
       },
       animateCoins:function(){
-        $(".coins_wrapper").css({"top":"92%","left":"55%"});
+        $(".coins_wrapper").css({"top":"80%","left":"55%"});
+        $(".user-coins .coin").css({transform: "scale(0.5,0.5)"});
       },
       updatePotValue:function(){
-        $(".pot").html("Pot: "+pot);
+        $(".pot").html("$"+pot);
+      },
+      updatePlayerMoney:function(player_id){
+          $(".user-cash-container").eq(player_id).html( Players[player_id].money);
+      },
+      clearPotCoins:function(){
+        $(".coins-pot-wrapper").empty();
+      },
+      updateMoneySliderMaxValue:function(){
+        $("#money-slider").attr("max",Players[0].money);
+      },
+      displayWinningCards:function(winners){
+        var iteration_number = 0;
+        var player;
+        $(".card").css("transitionDelay","0ms");
+        (function Repeat(){
+          player = winners[iteration_number];
+          setTimeout(function(){
+            var card1 = Players[player].Card1x+"-"+Players[player].Card1y;
+            var card2 =  Players[player].Card2x+"-"+Players[player].Card2y;
+            $("#"+card1).attr('src',"images/cards/"+Players[player].Card1x+'-'+Players[player].Card1y+".png");
+            $("#"+card2).attr('src',"images/cards/"+Players[player].Card2x+'-'+Players[player].Card2y+".png");
+            $(".common-card").css("opacity","0.3");
+            $(".card").eq(player).css("opacity","0.3");
+            $(".card").eq(player+8).css("opacity","0.3");
+            Players[player].hand_cards.forEach((element)=>{
+              $("#"+element).css({"opacity":"1"});
+          });
+          if(player==0){
+            $(".deal-player-card-1").css({left:"+="+30,bottom:"-="+11,transform:"rotate(0deg)"});
+            $(".deal-player-card-2").css({left:"-="+30,bottom:"+="+11,transform:"rotate(0deg)"});
+          }
+          else{
+            $(".deal-card-8-"+player+"-1").css({left:"+="+30,bottom:"-="+13,transform:"rotate(0deg)"});
+            $(".deal-card-8-"+player+"-2").css({left:"-="+30,bottom:"+="+13,transform:"rotate(0deg)"});
+          }
+          iteration_number++;
+          if(iteration_number<winners.length){Repeat();}
+        },2000);
+      })();
       }
-
     }
   })();
   function ifPlayerDontWantToCheck(current_call){
@@ -188,16 +228,106 @@ $(document).ready(function(){
       return current_call;
     }
   }
-  var IdentifyPokerHands = function(community_cards,player_number,iteration,current_call){
+  function pushCardsToPlayersHand(hand_numbers,cards,player){
+    player.hand_cards = [];
+    for (var i = 1; i < hand_numbers.length; i++) {
+      cards.forEach((element)=>{
+        if(hand_numbers[i] <10){
+          if(hand_numbers[i] == element.substr(0,1)){
+            player.hand_cards.push(element);
+          }
+        }
+        else{
+          if(hand_numbers[i] == element.substr(0,2)){
+            player.hand_cards.push(element);
+          }
+        }
+      })
+    }
+    console.log("Gracz: "+Players.indexOf(player)+"  "+player.hand_cards);
+  }
+
+function pushCardsToPlayersHandForStraightAndFlush(hand_numbers,suit_number,cards,player){
+  player.hand_cards = [];
+  if(suit_number != false){
+    //for flush,straight_flush,royal_flush
+    for (var i = 1; i < hand_numbers.length; i++) {
+        for(var j=0;j<cards.length;j++){
+          if(hand_numbers[i]+"-"+suit_number == cards[j]){
+            player.hand_cards.push(cards[j]);
+            break;
+        }
+      }
+    }
+  }
+  else{
+    //for straight
+    for (var i = 1; i < hand_numbers.length; i++) {
+      if(hand_numbers[i]<10){
+        for(var j=0;j<cards.length;j++){
+          if(hand_numbers[i] == cards[j].substr(0,1)){
+          player.hand_cards.push(cards[j]);
+            break;
+        }
+      }
+    }
+      else{
+          for(var j=0;j<cards.length;j++){
+            if(hand_numbers[i] == cards[j].substr(0,2)){
+              player.hand_cards.push(cards[j]);
+              break;
+          }
+        }
+      }
+    }
+  }
+  console.log("Gracz: "+Players.indexOf(player)+"  "+player.hand_cards);
+}
+  function removeRepeatingKickers(players_hand_strength,kickers){
+    for (let i = 1; i < players_hand_strength.length; i++) {
+      do{
+        var is_repeat = false;
+        for (let j = 0; j < kickers.length; j++) {
+          if(kickers[j] == players_hand_strength[i]){
+            kickers.splice(j,1);
+            is_repeat = true;
+            break;
+          }
+        }
+      }
+      while(is_repeat);
+
+    }
+    return kickers;
+  }
+  function removeRepeatingKickersForStraight(numbers){
+    var is_repeat = false;
+    do{
+      for (var i = 0; i < numbers.length; i++) {
+        if(numbers[i] == numbers[i+1]){
+          numbers.splice(i,1);
+          is_repeat = true;
+          break;
+        }
+      }
+    }
+    while(is_repeat)
+    return numbers;
+  }
+  var IdentifyPokerHands = function(community_cards_arr,player_number,iteration,current_call){
     var numbers = [];
     var colors = [];
+    var cards = [];
     var repeating_numbers = [];
+    var flush_number;
     var n;
     var how_many_pairs = 0;
     var is_straight = 0;
     var is_flush = 0;
+    var new_kickers = [];
+    var community_cards= [];
     var hands = {
-      highest_card:[],
+      highest_card:[false],
       one_pair:[false],
       two_pairs:[false],
       three_of_a_kind:[false],
@@ -210,6 +340,10 @@ $(document).ready(function(){
     };
     var player = Players[player_number];
 
+    for (var i = 0; i < community_cards_arr.length; i++) {
+      community_cards[i] = community_cards_arr[i];
+    }
+
     numbers.push(player.Card1x);
     numbers.push(player.Card2x);
     colors.push(player.Card1y);
@@ -219,15 +353,21 @@ $(document).ready(function(){
       repeating_numbers[i] = 0;
     };
     if(iteration == 1){
-      n=3;
+      community_cards.splice(3,2);
     }
     else if(iteration == 2){
-      n=4;
+      community_cards.splice(4,1);
     }
-    else{
-      n=5;
-    }
-    for(let i = 0;i<n;i++){
+
+    //create new array with common cards and user's cards
+    community_cards.forEach((element)=>{cards.push(element)});
+    var player_card1 = player.Card1x.toString();
+    player_card1 += "-"+player.Card1y.toString();
+    var player_card2 = player.Card2x.toString();
+    player_card2 += "-"+player.Card2y.toString();
+    cards.push(player_card1,player_card2);
+
+    for(let i = 0;i<community_cards.length;i++){
       var card = community_cards[i].split("-");
       numbers.push(Number(card[0]));
       colors.push(Number(card[1]));
@@ -245,23 +385,11 @@ $(document).ready(function(){
   //sort numbers array decreasing
   numbers.sort((a,b)=> b-a);
   //highest_card
-    for (var i = 0; i < 5; i++) {
+    hands.highest_card[0] = true;
+    for (var i = 1; i < 6; i++) {
       hands.highest_card[i] = numbers[i];
     }
-  //remove repeating numbers
-  let end_of_array = false;
-  do{
-    for (var i = 0; i < numbers.length; i++) {
-      if(numbers[i] == numbers[i+1]){
-        numbers.splice(i+1,1);
-        break;
-      }
-      if(i == numbers.length-1){
-        end_of_array = true;
-      }
-    }
-  }
-  while(!end_of_array);
+    pushCardsToPlayersHand(hands.highest_card,cards,player);
 
 
 
@@ -274,10 +402,14 @@ $(document).ready(function(){
       hands.one_pair[1] = i+2;
     }
   }
-  for (let j = 0; j < numbers.length; j++) {
-    hands.one_pair[j+2] = numbers[j];
+  if(hands.one_pair[0] == true){
+    new_kickers = removeRepeatingKickers(hands.one_pair,numbers);
+    for (let j = 0; j < 3; j++) {
+      hands.one_pair[j+2] = new_kickers[j];
+      }
+    pushCardsToPlayersHand(hands.one_pair,cards,player);
   }
-    hands.one_pair.splice(hands.one_pair.indexOf(hands.one_pair[1],2),1);
+
   //two pairs
   for(let i = 0;i<repeating_numbers.length;i++){
     if(repeating_numbers[i] == 2){
@@ -291,11 +423,12 @@ $(document).ready(function(){
       }
     }
   };
-  for (let j = 0; j < numbers.length; j++) {
-    hands.two_pairs[j+3] = numbers[j];
+  if(hands.two_pairs[0] == true){
+    new_kickers = removeRepeatingKickers(hands.two_pairs,numbers);
+    hands.two_pairs[3] = new_kickers[0];
+    pushCardsToPlayersHand(hands.two_pairs,cards,player);
   }
-  hands.two_pairs.splice(hands.two_pairs.indexOf(hands.two_pairs[1],3),1);
-  hands.two_pairs.splice(hands.two_pairs.indexOf(hands.two_pairs[2],3),1);
+
 
   //three of a kind
   for(let i = 0;i<repeating_numbers.length;i++){
@@ -304,19 +437,27 @@ $(document).ready(function(){
       hands.three_of_a_kind[1] = i+2;
     }
   };
-  for (let j = 0; j < numbers.length; j++) {
-    hands.three_of_a_kind[j+2] = numbers[j];
+  if(hands.three_of_a_kind[0] == true){
+    new_kickers = removeRepeatingKickers(hands.three_of_a_kind,numbers);
+    for (let j = 0; j < 2; j++) {
+      hands.three_of_a_kind[j+2] = new_kickers[j];
+    }
+    pushCardsToPlayersHand(hands.three_of_a_kind,cards,player);
   }
-  hands.three_of_a_kind.splice(hands.three_of_a_kind.indexOf(hands.three_of_a_kind[1],2),1);
+
   //straight
-    for(let i = 0;i<numbers.length;i++){
+  new_kickers = removeRepeatingKickersForStraight(numbers);
+    for(let i = 0;i<new_kickers.length;i++){
       if(is_straight == 4){
           hands.straight[0] = true;
-          hands.straight[1] = numbers[i-4];
+          for (var j = 1; j < 6; j++) {
+            hands.straight[j] = new_kickers[(i-5)+j];
+          }
+          pushCardsToPlayersHandForStraightAndFlush(hands.straight,false,cards,player);
           break;
       }
       else{
-        if(numbers[i] == numbers[i+1]+1){
+        if(new_kickers[i] == new_kickers[i+1]+1){
           is_straight++;
         }
         else{
@@ -331,7 +472,10 @@ $(document).ready(function(){
   for(let i = 0;i<colors.length;i++){
     if(is_flush == 4){
         hands.flush[0] = true;
-        hands.flush[1] = numbers[0];
+        for (var j = 0; j < 5; j++) {
+          hands.flush[j+1] = numbers[j];  }
+        flush_number = colors[i];
+        pushCardsToPlayersHandForStraightAndFlush(hands.flush,flush_number,cards,player);
         break;
     }
     else{
@@ -349,14 +493,19 @@ if(hands.one_pair[0] == true && hands.three_of_a_kind[0] == true){
   hands.full_house[0] = true;
   hands.full_house[1] = hands.three_of_a_kind[1];
   hands.full_house[2] = hands.one_pair[1];
+  pushCardsToPlayersHand(hands.full_house,cards,player);
 }
 //four_of_a_kind
 for(let i = 0;i<repeating_numbers.length;i++){
   if(repeating_numbers[i] == 4){
     hands.four_of_a_kind[0] = true;
     hands.four_of_a_kind[1] = i+2;
-    hands.four_of_a_kind[2] = numbers[0];
   }
+}
+if(hands.four_of_a_kind[0] == true){
+  new_kickers = removeRepeatingKickers(hands.four_of_a_kind,numbers);
+  hands.four_of_a_kind[2] = new_kickers[0];
+  pushCardsToPlayersHand(hands.four_of_a_kind,cards,player);
 }
 //straight flush and royal flush
 if(hands.straight[0] == true && hands.flush[0] == true){
@@ -364,6 +513,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
   if(hands.straight[1] == 14){
     hands.royal_flush[0] = true;
   }
+  pushCardsToPlayersHandForStraightAndFlush(hands.straight,flush_number,cards,player);
 }
 
 //how much money bet
@@ -382,7 +532,7 @@ let back_call = 0;
   }
   else if(hands.straight_flush[0] ==true){
     player.user_hand = "straigth_flush";
-    hands.straigth_flush.shift();
+    hands.straight_flush.shift();
     player.cardsStrengthArray = hands.straigth_flush;
     if(player_number == 0){
       return;
@@ -537,6 +687,7 @@ let back_call = 0;
   }
   else{
     player.user_hand = "highest_card";
+    hands.highest_card.shift();
     player.cardsStrengthArray = hands.highest_card;
     if(player_number == 0){
       return;
@@ -557,7 +708,7 @@ let back_call = 0;
 
     var x,y;
     var time_out_variable = 1;
-    var player = function (Card1x,Card1y,Card2x,Card2y,money,fold,user_call,all_in,user_hand,cardsStrengthArray){
+    var player = function (Card1x,Card1y,Card2x,Card2y,money,fold,user_call,all_in,user_hand,hand_cards,cardsStrengthArray){
       this.Card1x = Card1x;
       this.Card1y = Card1y;
       this.Card2x = Card2x;
@@ -567,6 +718,7 @@ let back_call = 0;
       this.user_call = user_call;
       this.all_in = all_in;
       this.user_hand = user_hand;
+      this.hand_cards = hand_cards;
       this.cardsStrengthArray = cardsStrengthArray;
 
     };
@@ -589,6 +741,9 @@ let back_call = 0;
         } while (is_repeat);
         flop_river_turn_cards.push(joined);
         RandomCards.push(joined);
+      }
+      for (var i = 0; i< 5; i++) {
+        $(".flop-river-turn-relative").append('<img class = "common-card" id="'+flop_river_turn_cards[i]+'" src = "images/cards/'+flop_river_turn_cards[i]+'.png">');
       }
 
     };
@@ -674,8 +829,7 @@ let back_call = 0;
     function addCoins(coinsArray,id = "pot"){
       var coin_value;
       var child_number = id+1;
-      var object;
-
+      var pot_interval = 0;
       coinsArray.forEach(function(element,index){
         switch(index){
           case 0:
@@ -706,22 +860,33 @@ let back_call = 0;
             coin_value = 5
             break;
         }
-        object = id =="pot" ? ".coins-pot-relative":"#coin-user-"+child_number;
-        for(var i = 0;i<element;i++){
-          $(object).append('<img class = "coin" src = "images/coins/'+coin_value+'.png">');
+
+        if(id=="pot" && element != 0){
+          pot_interval++;
+          $(".coins-pot-wrapper").prepend('<div class = "coins-pot-relative"></div>');
+          $(".coins-pot-relative:first").css({marginLeft:50*pot_interval});
+          for(var i = 0;i<element;i++){
+            let coins_relative = $(".coins-pot-relative:first");
+            coins_relative.append('<img class = "coin" src = "images/coins/'+coin_value+'.png">');
+            $(".coins-pot-relative:first .coin").eq(i).css({left:10*i+"px"});
+          }
+        }
+        else{
+          for(var i = 0;i<element;i++){
+            $("#coin-user-"+child_number).append('<img class = "coin" src = "images/coins/'+coin_value+'.png">');
+          }
+          randomCoins(child_number);
         }
       })
-      count(object);
     }
-
-    function count(object){
-
-      $(object+" .coin").each(function(){
+    function randomCoins(child_number){
+      $("#coin-user-"+child_number+" .coin").each(function(){
         var x = Math.round(Math.random()*80);
         var y = Math.round(Math.random()*80);
         $(this).css({left:x+"px",top:y+"px"});
-    });
-  }
+      })
+      }
+
 
     function anyPlayersLeft(){
       var players_left = 0;
@@ -764,6 +929,7 @@ let back_call = 0;
          pot += separate_call;
          element.money -= separate_call;
          console.log(player_id+" "+back_call);
+         userInt.updatePlayerMoney(player_id);
          howManyCoins(separate_call,player_id);
          element.user_call = current_call;
        },
@@ -783,6 +949,7 @@ let back_call = 0;
           pot += separate_call;
           Players[0].money -= separate_call;
           console.log("Player 0: "+back_call);
+          userInt.updatePlayerMoney(0);
           howManyCoins(separate_call,0);
           Players[0].user_call = back_call;
           return;
@@ -905,7 +1072,7 @@ let back_call = 0;
             winner = users_with_equal_hands[0];
             console.log("winner: "+winner);
           }
-
+          userInt.displayWinningCards(users_with_equal_hands);
 
       },
       queue: function(){
@@ -919,7 +1086,14 @@ let back_call = 0;
                     current_call = -1;
                   }
                   else{
-                    Cards.handSolver();
+                    setTimeout(function(){
+                        userInt.clearPotCoins();
+                        initialPositions.resetCoinsAnimation();
+                        howManyCoins(pot);
+                        userInt.updatePotValue();
+                        $(".player-decision").css("display","none");
+                    },500);
+                    userInt.animateCoins();
                     return;
                   }
                   if(playersLeftAfterAllIn()){
@@ -934,17 +1108,29 @@ let back_call = 0;
                   i=1;
                   userInt.animateCoins();
                   setTimeout(function(){
+                      userInt.clearPotCoins();
+                      initialPositions.resetCoinsAnimation();
+                      howManyCoins(pot);
+                      userInt.updatePotValue();
+                      $(".player-decision").css("display","none");
+                  },500);
+                  setTimeout(function(){
                     console.log("!!!!!!!!!!!!!!!!!!!!!");
-                    initialPositions.resetCoinsAnimation(8);
-                    howManyCoins(pot);
-                    userInt.updatePotValue();
                     userInt.flop(flop_river_turn_cards,iteration);
                     IdentifyPokerHands(flop_river_turn_cards,0,iteration,0);
                     TheLoop();
-                  },1000);
+                  },2000);
                   return;
                 }
                 else{
+                  setTimeout(function(){
+                      userInt.clearPotCoins();
+                      initialPositions.resetCoinsAnimation();
+                      howManyCoins(pot);
+                      userInt.updatePotValue();
+                      $(".player-decision").css("display","none");
+                  },500);
+                  userInt.animateCoins();
                   Cards.handSolver();
                   return;
                 }
@@ -1023,7 +1209,7 @@ let back_call = 0;
                   }
                 }
               }
-            },1000);
+            },800);
           };
           })();
         }
@@ -1060,6 +1246,7 @@ let back_call = 0;
     $(".button").on("click",function(){
       UserInter.toggleButtons(Players);
       Cards.mainPlayerChoice();
+      UserInter.updateMoneySliderMaxValue();
       UserInter.showPlayerDecision(current_call,back_call,0);
       Cards.queue();
     });
@@ -1073,10 +1260,12 @@ let back_call = 0;
     Cards.drawCard();
     Cards.flopRiverTurn();
     Cards.setMoneyToPlayers();
-    UserInter.showPlayerCards(Players,n);
+    UserInter.showPlayerCards(n);
     initPos.initialPositions(n);
+    UserInter.updateMoneySliderMaxValue();
     $(".button").toggle();
     $('.player-decision').toggle();
+
 
   })(initPositions,Cards,UserInterface);
 });
