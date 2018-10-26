@@ -1,29 +1,38 @@
 'use strict';
 
 $(document).ready(function(){
+  var number_of_players_in_game = Number(localStorage.getItem('number'));
+  if(number_of_players_in_game ==2){
+    var i = 0;
+    var raise_index = 0;
+    var counter = 0;
+    var back_call = 65
+    var pre_flop = "start";
+  }
+  else{
+    var i = 3;
+    var raise_index = 3;
+    var counter = 3;
+  }
 
-  var i = 3;
+  var iteration = 0;
+  var players = [];
+  var pot = 0;
   var current_call = 65;
   var back_call;
-  var raise_index = 3;
-  var counter = 3;
-  var iteration = 0;
-  var Players = [];
-  var pot = 0;
+  var sound = new Audio("duet.mp3");
 
 
-  var initPositions = (function(){
-
-    function initPosCards(n){
-      if(n === 3){
+  var InitPositions = (function(){
+    function initPosCards(){
+      if( number_of_players_in_game=== 2){
       $(".card").eq(0).addClass("deal-player-card-1");
       $(".card").eq(1).addClass("deal-card-3-1-1");
-      $(".card").eq(2).addClass("deal-card-3-2-1");
-      $(".card").eq(3).addClass("deal-player-card-2");
-      $(".card").eq(4).addClass("deal-card-3-1-2");
-      $(".card").eq(5).addClass("deal-card-3-2-2");
-      }
-      else if(n === 6){
+      $(".card").eq(2).addClass("deal-player-card-2");
+      $(".card").eq(3).addClass("deal-card-3-1-2");
+
+}
+      else if(number_of_players_in_game === 6){
         $(".card").eq(0).addClass("deal-player-card-1");
         $(".card").eq(1).addClass("deal-card-6-1-1");
         $(".card").eq(2).addClass("deal-card-6-2-1");
@@ -57,41 +66,69 @@ $(document).ready(function(){
       }
     }
 
-    function initPosPlayers(n){
-      $("#player").css({"bottom":"-2%","left":"50%"});
-      $("#user1").css({"bottom":"1%","left":"17%"});
-      $("#user2").css({"bottom":"40%","left":"8%"});
-      $("#user3").css({"bottom":"91%","left":"11%"});
-      $("#user4").css({"bottom":"91%","left":"43%"});
-      $("#user5").css({"bottom":"91%","left":"88%"});
-      $("#user6").css({"bottom":"40%","left":"94%"});
-      $("#user7").css({"bottom":"1%","left":"74%"});
+    function initPosPlayers(){
+      if(number_of_players_in_game == 2){
+        $("#player").css({"bottom":"-2%","left":"44%"});
+        $("#user1").css({"bottom":"89%","left":"39%"});
+      }
+      else if(number_of_players_in_game == 6){
+        $("#player").css({"bottom":"-2%","left":"50%"});
+        $("#user1").css({"bottom":"1%","left":"17%"});
+        $("#user2").css({"bottom":"89%","left":"15%"});
+        $("#user3").css({"bottom":"91%","left":"43%"});
+        $("#user4").css({"bottom":"91%","left":"75%"});
+        $("#user5").css({"bottom":"0%","left":"73%"});
+      }
+      else{
+        $("#player").css({"bottom":"-2%","left":"50%"});
+        $("#user1").css({"bottom":"1%","left":"17%"});
+        $("#user2").css({"bottom":"40%","left":"8%"});
+        $("#user3").css({"bottom":"91%","left":"11%"});
+        $("#user4").css({"bottom":"91%","left":"43%"});
+        $("#user5").css({"bottom":"91%","left":"88%"});
+        $("#user6").css({"bottom":"40%","left":"94%"});
+        $("#user7").css({"bottom":"1%","left":"74%"});
+      }
     }
 
-    function initPosCoins(n){
-      $("#user-1-coins").css({"top":"139%","left":"52%"});
-      $("#user-2-coins").css({"top":"114%","left":"10%"});
-      $("#user-3-coins").css({"top":"34%","left":"-6%"});
-      $("#user-4-coins").css({"top":"-10%","left":"10%"});
-      $("#user-5-coins").css({"top":"-23%","left":"70%"});
-      $("#user-6-coins").css({"top":"-8%","left":"110%"});
-      $("#user-7-coins").css({"top":"57%","left":"115%"});
-      $("#user-8-coins").css({"top":"120%","left":"96%"});
+    function initPosCoins(){
+      if(number_of_players_in_game == 2){
+        $("#user-1-coins").css({"top":"139%","left":"52%"});
+        $("#user-2-coins").css({"top":"114%","left":"10%"});
+      }
+      else if(number_of_players_in_game == 6){
+        $("#user-1-coins").css({"top":"139%","left":"52%"});
+        $("#user-2-coins").css({"top":"114%","left":"10%"});
+        $("#user-3-coins").css({"top":"34%","left":"-6%"});
+        $("#user-4-coins").css({"top":"-10%","left":"10%"});
+        $("#user-5-coins").css({"top":"-23%","left":"70%"});
+        $("#user-6-coins").css({"top":"-8%","left":"110%"});
+      }
+      else{
+        $("#user-1-coins").css({"top":"139%","left":"52%"});
+        $("#user-2-coins").css({"top":"114%","left":"10%"});
+        $("#user-3-coins").css({"top":"34%","left":"-6%"});
+        $("#user-4-coins").css({"top":"-10%","left":"10%"});
+        $("#user-5-coins").css({"top":"-23%","left":"70%"});
+        $("#user-6-coins").css({"top":"-8%","left":"110%"});
+        $("#user-7-coins").css({"top":"57%","left":"115%"});
+        $("#user-8-coins").css({"top":"120%","left":"96%"});
+      }
     }
 
     return {
-      initialPositions: function(n){
-        initPosPlayers(n);
-        initPosCoins(n);
+      initialPositions: function(){
+        initPosPlayers();
+        initPosCoins();
       },
-      resetCoinsAnimation:function(n){
+      resetCoinsAnimation:function(){
         $(".user-coins").empty();
         $(".coins-pot-wrapper").empty();
-        initPosCoins(n);
+        initPosCoins();
 
       },
-      initCardsPositions: function(n){
-        initPosCards(n);
+      initCardsPositions: function(){
+        initPosCards();
       }
     }
 
@@ -108,18 +145,24 @@ $(document).ready(function(){
 
 
     return{
-      showPlayerCards: function(n){
-        var insertCardHTML = '<img class = "card" id="'+Players[0].Card1x+'-'+Players[0].Card1y+'" src = "images/cards/'+Players[0].Card1x+'-'+Players[0].Card1y+'.png">';
-        $("#player").before(insertCardHTML);
-
-        for(var i = 0 ; i< (n-2);i++){
-          $("#player").before('<img class = "card" id="'+Players[i+1].Card1x+'-'+Players[i+1].Card1y+'" src = "images/cards/card back.png">');
+      displayUsers:function(){
+        for(var i=1;i<number_of_players_in_game;i++){
+          $(".container").append(  '<div class = "user-container" id = "user'+i+'"><div class = "inner-user-container"><div class = "player-decision">FOLD</div><img src = "images/Daniel-Negreanu.jpg"><div class = "user-cash-container">1000</div></div></div>')
         }
-        insertCardHTML = '<img class = "card" id="'+Players[0].Card2x+'-'+Players[0].Card2y+'" src = "images/cards/'+Players[0].Card2x+'-'+Players[0].Card2y+'.png">';
+        $('.player-decision').toggle();
+      },
+      showPlayerCards: function(){
+        var insertCardHTML = '<img class = "card" id="'+players[0].Card1x+'-'+players[0].Card1y+'" src = "images/cards/'+players[0].Card1x+'-'+players[0].Card1y+'.png">';
         $("#player").before(insertCardHTML);
 
-        for(var i = 0 ; i< (n-2);i++){
-          $("#player").before('<img class = "card" id="'+Players[i+1].Card2x+'-'+Players[i+1].Card2y+'" src = "images/cards/card back.png">');
+        for(var i = 1 ; i< (number_of_players_in_game);i++){
+          $("#player").before('<img class = "card" id="'+players[i].Card1x+'-'+players[i].Card1y+'" src = "images/cards/card back.png">');
+        }
+        insertCardHTML = '<img class = "card" id="'+players[0].Card2x+'-'+players[0].Card2y+'" src = "images/cards/'+players[0].Card2x+'-'+players[0].Card2y+'.png">';
+        $("#player").before(insertCardHTML);
+
+        for(var i = 1 ; i< (number_of_players_in_game);i++){
+          $("#player").before('<img class = "card" id="'+players[i].Card2x+'-'+players[i].Card2y+'" src = "images/cards/card back.png">');
         }
         animateCards();
       },
@@ -156,10 +199,10 @@ $(document).ready(function(){
         $(".player-decision").eq(player_num).remove();
         $(".inner-user-container").eq(player_num).prepend("<div class = 'player-decision'></div>");
         var element = $(".player-decision").eq(player_num);
-        if(Players[player_num].all_in == true){
+        if(players[player_num].all_in == true){
           element.html("ALL IN");
         }
-        else if(Players[player_num].fold == true){
+        else if(players[player_num].fold == true){
           element.html("FOLD");
         }
         else if(back_call == -1){
@@ -180,13 +223,17 @@ $(document).ready(function(){
         $(".pot").html("$"+pot);
       },
       updatePlayerMoney:function(player_id){
-          $(".user-cash-container").eq(player_id).html( Players[player_id].money);
+          $(".user-cash-container").eq(player_id).html( players[player_id].money);
       },
       clearPotCoins:function(){
         $(".coins-pot-wrapper").empty();
       },
       updateMoneySliderMaxValue:function(){
-        $("#money-slider").attr("max",Players[0].money);
+        $("#money-slider").attr("max",players[0].money);
+      },
+      updateRiseValue: function(){
+        var val = $("#money-slider").val();
+        $("#raise").html("RAISE "+val);
       },
       displayWinningCards:function(winners){
         var iteration_number = 0;
@@ -195,14 +242,14 @@ $(document).ready(function(){
         (function Repeat(){
           player = winners[iteration_number];
           setTimeout(function(){
-            var card1 = Players[player].Card1x+"-"+Players[player].Card1y;
-            var card2 =  Players[player].Card2x+"-"+Players[player].Card2y;
-            $("#"+card1).attr('src',"images/cards/"+Players[player].Card1x+'-'+Players[player].Card1y+".png");
-            $("#"+card2).attr('src',"images/cards/"+Players[player].Card2x+'-'+Players[player].Card2y+".png");
+            var card1 = players[player].Card1x+"-"+players[player].Card1y;
+            var card2 =  players[player].Card2x+"-"+players[player].Card2y;
+            $("#"+card1).attr('src',"images/cards/"+players[player].Card1x+'-'+players[player].Card1y+".png");
+            $("#"+card2).attr('src',"images/cards/"+players[player].Card2x+'-'+players[player].Card2y+".png");
             $(".common-card").css("opacity","0.3");
             $(".card").eq(player).css("opacity","0.3");
-            $(".card").eq(player+8).css("opacity","0.3");
-            Players[player].hand_cards.forEach((element)=>{
+            $(".card").eq(player+number_of_players_in_game).css("opacity","0.3");
+            players[player].hand_cards.forEach((element)=>{
               $("#"+element).css({"opacity":"1"});
           });
           if(player==0){
@@ -210,8 +257,8 @@ $(document).ready(function(){
             $(".deal-player-card-2").css({left:"-="+30,bottom:"+="+11,transform:"rotate(0deg)"});
           }
           else{
-            $(".deal-card-8-"+player+"-1").css({left:"+="+30,bottom:"-="+13,transform:"rotate(0deg)"});
-            $(".deal-card-8-"+player+"-2").css({left:"-="+30,bottom:"+="+13,transform:"rotate(0deg)"});
+            $(".deal-card-"+number_of_players_in_game+"-"+player+"-1").css({left:"+="+30,bottom:"-="+13,transform:"rotate(0deg)"});
+            $(".deal-card-"+number_of_players_in_game+"-"+player+"-2").css({left:"-="+30,bottom:"+="+13,transform:"rotate(0deg)"});
           }
           iteration_number++;
           if(iteration_number<winners.length){Repeat();}
@@ -244,7 +291,7 @@ $(document).ready(function(){
         }
       })
     }
-    console.log("Gracz: "+Players.indexOf(player)+"  "+player.hand_cards);
+    console.log("Gracz: "+players.indexOf(player)+"  "+player.hand_cards);
   }
 
 function pushCardsToPlayersHandForStraightAndFlush(hand_numbers,suit_number,cards,player){
@@ -281,7 +328,7 @@ function pushCardsToPlayersHandForStraightAndFlush(hand_numbers,suit_number,card
       }
     }
   }
-  console.log("Gracz: "+Players.indexOf(player)+"  "+player.hand_cards);
+  console.log("Gracz: "+players.indexOf(player)+"  "+player.hand_cards);
 }
   function removeRepeatingKickers(players_hand_strength,kickers){
     for (let i = 1; i < players_hand_strength.length; i++) {
@@ -320,7 +367,6 @@ function pushCardsToPlayersHandForStraightAndFlush(hand_numbers,suit_number,card
     var cards = [];
     var repeating_numbers = [];
     var flush_number;
-    var n;
     var how_many_pairs = 0;
     var is_straight = 0;
     var is_flush = 0;
@@ -338,7 +384,7 @@ function pushCardsToPlayersHandForStraightAndFlush(hand_numbers,suit_number,card
       straight_flush:[false],
       royal_flush:[false]
     };
-    var player = Players[player_number];
+    var player = players[player_number];
 
     for (var i = 0; i < community_cards_arr.length; i++) {
       community_cards[i] = community_cards_arr[i];
@@ -517,191 +563,194 @@ if(hands.straight[0] == true && hands.flush[0] == true){
 }
 
 //how much money bet
-let back_call = 0;
-  if(hands.royal_flush[0] ==true){
-    player.user_hand = "royal_flush";
-    if(player_number == 0){
-      return;
+
+  let back_call = 0;
+    if(hands.royal_flush[0] ==true){
+      player.user_hand = "royal_flush";
+      if(player_number == 0 || player.all_in == true){
+        return;
+      }
+      current_call = ifPlayerDontWantToCheck(current_call);
+      console.log(player_number+" royal_flush" );
+      back_call = player.money;
+      player.all_in = true;
+      Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+      return back_call;
     }
-    current_call = ifPlayerDontWantToCheck(current_call);
-    console.log(player_number+" royal_flush" );
-    back_call = player.money;
-    player.all_in = true;
-    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
-    return back_call;
-  }
-  else if(hands.straight_flush[0] ==true){
-    player.user_hand = "straigth_flush";
-    hands.straight_flush.shift();
-    player.cardsStrengthArray = hands.straigth_flush;
-    if(player_number == 0){
-      return;
+    else if(hands.straight_flush[0] ==true){
+      player.user_hand = "straigth_flush";
+      hands.straight_flush.shift();
+      player.cardsStrengthArray = hands.straigth_flush;
+      if(player_number == 0 || player.all_in == true){
+        return;
+      }
+      current_call = ifPlayerDontWantToCheck(current_call);
+      console.log(player_number+" straigth_flush" );
+      back_call = player.money;
+      player.all_in = true;
+      Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+      return back_call;
     }
-    current_call = ifPlayerDontWantToCheck(current_call);
-    console.log(player_number+" straigth_flush" );
-    back_call = player.money;
-    player.all_in = true;
-    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
-    return back_call;
-  }
-  else if(hands.four_of_a_kind[0] ==true){
-    player.user_hand = "four_of_a_kind";
-    hands.four_of_a_kind.shift();
-    player.cardsStrengthArray = hands.four_of_a_kind;
-    if(player_number == 0){
-      return;
+    else if(hands.four_of_a_kind[0] ==true){
+      player.user_hand = "four_of_a_kind";
+      hands.four_of_a_kind.shift();
+      player.cardsStrengthArray = hands.four_of_a_kind;
+      if(player_number == 0 || player.all_in == true){
+        return;
+      }
+      current_call = ifPlayerDontWantToCheck(current_call);
+      console.log(player_number+" four_of_a_kind" );
+      back_call = player.money;
+      player.all_in = true;
+      Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+      return back_call;
     }
-    current_call = ifPlayerDontWantToCheck(current_call);
-    console.log(player_number+" four_of_a_kind" );
-    back_call = player.money;
-    player.all_in = true;
-    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
-    return back_call;
-  }
-  else if(hands.full_house[0] ==true){
-    player.user_hand = "full_house";
-    hands.full_house.shift();
-    player.cardsStrengthArray = hands.full_house;
-    if(player_number == 0){
-      return;
+    else if(hands.full_house[0] ==true){
+      player.user_hand = "full_house";
+      hands.full_house.shift();
+      player.cardsStrengthArray = hands.full_house;
+      if(player_number == 0 || player.all_in == true){
+        return;
+      }
+      current_call = ifPlayerDontWantToCheck(current_call);
+      console.log(player_number+" full_house");
+      back_call = player.money;
+      player.all_in = true;
+      Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+      return back_call;
     }
-    current_call = ifPlayerDontWantToCheck(current_call);
-    console.log(player_number+" full_house");
-    back_call = player.money;
-    player.all_in = true;
-    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
-    return back_call;
-  }
-  else if(hands.flush[0] ==true){
-    player.user_hand = "flush";
-    hands.flush.shift();
-    player.cardsStrengthArray = hands.flush;
-    if(player_number == 0){
-      return;
+    else if(hands.flush[0] ==true){
+      player.user_hand = "flush";
+      hands.flush.shift();
+      player.cardsStrengthArray = hands.flush;
+      if(player_number == 0 || player.all_in == true){
+        return;
+      }
+      current_call = ifPlayerDontWantToCheck(current_call);
+      console.log(player_number+" flush");
+      back_call = player.money;
+      player.all_in = true;
+      Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+      return back_call;
     }
-    current_call = ifPlayerDontWantToCheck(current_call);
-    console.log(player_number+" flush");
-    back_call = player.money;
-    player.all_in = true;
-    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
-    return back_call;
-  }
-  else if(hands.straight[0] ==true){
-    player.user_hand = "straight";
-    hands.straight.shift();
-    player.cardsStrengthArray = hands.straight;
-    if(player_number == 0){
-      return;
-    }
-    current_call = ifPlayerDontWantToCheck(current_call);
-    console.log(player_number+" STRAIGHT");
-    if(current_call<player.money*0.4){
-      back_call = current_call * 2;
-    }
-    else{
-      if(current_call>=player.money){
-        back_call = player.money;
-        player.all_in = true;
+    else if(hands.straight[0] ==true){
+      player.user_hand = "straight";
+      hands.straight.shift();
+      player.cardsStrengthArray = hands.straight;
+      if(player_number == 0 || player.all_in == true){
+        return;
+      }
+      current_call = ifPlayerDontWantToCheck(current_call);
+      console.log(player_number+" STRAIGHT");
+      if(current_call<player.money*0.4){
+        back_call = current_call * 2;
       }
       else{
-        back_call = current_call;
+        if(current_call>=player.money){
+          back_call = player.money;
+          player.all_in = true;
+        }
+        else{
+          back_call = current_call;
+        }
       }
+      Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+      return back_call;
     }
-    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
-    return back_call;
-  }
 
-  else if(hands.three_of_a_kind[0] ==true){
-    player.user_hand = "three_of_a_kind";
-    hands.three_of_a_kind.shift();
-    player.cardsStrengthArray = hands.three_of_a_kind;
-    if(player_number == 0){
-      return;
-    }
-    current_call = ifPlayerDontWantToCheck(current_call);
-    console.log(player_number+" three_of_a_kind");
-    if(current_call<player.money*0.3){
-      back_call = Math.round(current_call*1.7);
-    }
-    else{
-      if(current_call>=player.money){
-        back_call = player.money;
-        player.all_in = true;
+    else if(hands.three_of_a_kind[0] ==true){
+      player.user_hand = "three_of_a_kind";
+      hands.three_of_a_kind.shift();
+      player.cardsStrengthArray = hands.three_of_a_kind;
+      if(player_number == 0 || player.all_in == true){
+        return;
+      }
+      current_call = ifPlayerDontWantToCheck(current_call);
+      console.log(player_number+" three_of_a_kind");
+      if(current_call<player.money*0.3){
+        back_call = Math.round(current_call*2);
       }
       else{
-        back_call = current_call;
+        if(current_call>=player.money){
+          back_call = player.money;
+          player.all_in = true;
+        }
+        else{
+          back_call = current_call;
+        }
       }
+      Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+      return back_call;
     }
-    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
-    return back_call;
-  }
 
-  else if(hands.two_pairs[0] ==true){
-    player.user_hand = "two_pairs";
-    hands.two_pairs.shift();
-    player.cardsStrengthArray = hands.two_pairs;
-    if(player_number == 0){
-      return;
+    else if(hands.two_pairs[0] ==true){
+      player.user_hand = "two_pairs";
+      hands.two_pairs.shift();
+      player.cardsStrengthArray = hands.two_pairs;
+      if(player_number == 0 || player.all_in == true){
+        return;
+      }
+      current_call = ifPlayerDontWantToCheck(current_call);
+      console.log(player_number+" two_pairs");
+      if(current_call<player.money*0.7){
+        back_call = Math.round(current_call);
+      }
+      else{
+        if(current_call>=player.money/1.25){
+          back_call = current_call;
+          player.fold = true;
+          return back_call;
+        }
+        else{
+          back_call = current_call;
+        }
+      }
+      Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+      return back_call;
     }
-    current_call = ifPlayerDontWantToCheck(current_call);
-    console.log(player_number+" two_pairs");
-    if(current_call<player.money*0.7){
-      back_call = Math.round(current_call);
+
+    else if(hands.one_pair[0] ==true){
+      player.user_hand = "one_pair";
+      hands.one_pair.shift();
+      player.cardsStrengthArray = hands.one_pair;
+      if(player_number == 0 || player.all_in == true){
+        return;
+      }
+      current_call = ifPlayerDontWantToCheck(current_call);
+      console.log(player_number+" one_pair" );
+      if(current_call<player.money*0.7){
+        back_call = Math.round(current_call);
+      }
+      else{
+        if(current_call>=player.money/2){
+          back_call = current_call;
+          player.fold = true;
+          return back_call;
+        }
+        else{
+          back_call = current_call;
+        }
+      }
+      Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
+      return back_call;
     }
     else{
-      if(current_call>=player.money/1.25){
-        back_call = current_call;
+      player.user_hand = "highest_card";
+      hands.highest_card.shift();
+      player.cardsStrengthArray = hands.highest_card;
+      if(player_number == 0 || player.all_in == true){
+        return;
+      }
+      if(current_call == -1){
+        console.log("CHECK");
+        return current_call;
+
+      }
+      else {
         player.fold = true;
-      }
-      else{
-        back_call = current_call;
+        return current_call;
       }
     }
-    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
-    return back_call;
-  }
-
-  else if(hands.one_pair[0] ==true){
-    player.user_hand = "one_pair";
-    hands.one_pair.shift();
-    player.cardsStrengthArray = hands.one_pair;
-    if(player_number == 0){
-      return;
-    }
-    current_call = ifPlayerDontWantToCheck(current_call);
-    console.log(player_number+" one_pair" );
-    if(current_call<player.money*0.7){
-      back_call = Math.round(current_call);
-    }
-    else{
-      if(current_call>=player.money/2){
-        back_call = current_call;
-        player.fold = true;
-      }
-      else{
-        back_call = current_call;
-      }
-    }
-    Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
-    return back_call;
-  }
-  else{
-    player.user_hand = "highest_card";
-    hands.highest_card.shift();
-    player.cardsStrengthArray = hands.highest_card;
-    if(player_number == 0){
-      return;
-    }
-    if(current_call == -1){
-      console.log("CHECK");
-      return current_call;
-
-    }
-    else {
-      player.fold = true;
-      return current_call;
-    }
-  }
 }
 
   var Cards = (function(userInt,initialPositions){
@@ -782,7 +831,8 @@ let back_call = 0;
     function playerChoice(element,current_call,player_id){
       var back_call;
       if((element.Card1x == element.Card2x)&&(element.Card1x > 7)){
-        back_call = Math.round(element.money/3);
+        back_call = element.money;
+        element.all_in = true;
         Cards.playerMoneyUpdate(element,current_call,player_id,back_call);
         return back_call;
       }
@@ -890,7 +940,7 @@ let back_call = 0;
 
     function anyPlayersLeft(){
       var players_left = 0;
-      Players.forEach(function(element){
+      players.forEach(function(element){
         if(element.fold != true){
           players_left++;
         }
@@ -905,7 +955,7 @@ let back_call = 0;
 
     function playersLeftAfterAllIn(){
       var players_left = 0;
-      Players.forEach(function(element){
+      players.forEach(function(element){
         if(element.fold == false && element.all_in == false){
           players_left++;
         }
@@ -918,7 +968,7 @@ let back_call = 0;
       }
     };
     function cleanOutUserCall(){
-      Players.forEach(function(element){
+      players.forEach(function(element){
         element.user_call = 0;
       })
     };
@@ -931,39 +981,39 @@ let back_call = 0;
          console.log(player_id+" "+back_call);
          userInt.updatePlayerMoney(player_id);
          howManyCoins(separate_call,player_id);
-         element.user_call = current_call;
+         element.user_call =back_call;
        },
 
       mainPlayerChoice: function(){
         let separate_call;
-        if(Players[0].fold == true){
+        if(players[0].fold == true){
           return;
         }
         else{
-          if(Players[0].all_in == true){
-             separate_call = Players[0].money;
+          if(players[0].all_in == true){
+             separate_call = players[0].money;
           }
           else{
-             separate_call = back_call - Players[0].user_call;
+             separate_call = back_call - players[0].user_call;
           }
           pot += separate_call;
-          Players[0].money -= separate_call;
+          players[0].money -= separate_call;
           console.log("Player 0: "+back_call);
           userInt.updatePlayerMoney(0);
           howManyCoins(separate_call,0);
-          Players[0].user_call = back_call;
+          players[0].user_call = back_call;
           return;
         }
       },
 
-      createPlayers: function(n){
-        for(var i = 0; i < n-1; i++){
+      createPlayers: function(){
+        for(var i = 0; i <number_of_players_in_game; i++){
           var Player = new player();
-          Players.push(Player);
+          players.push(Player);
         }
       },
       drawCard: function(){
-        Players.forEach(function(elem){
+        players.forEach(function(elem){
           elem.drawCards();
           elem.fold = false;
           elem.user_call = 0;
@@ -975,22 +1025,22 @@ let back_call = 0;
         flopRiverTurnDraw();
       },
       setMoneyToPlayers: function(){
-        Players.forEach(function(element){
+        players.forEach(function(element){
           element.money = 1000;
         })
       },
       players: function(){
-        return Players;
+        return players;
       },
       handSolver: function(){
-        var handsArray = new Array(8);
+        var handsArray = new Array(number_of_players_in_game);
         var winner;
         var length_of_kickers;
         handsArray.fill(0);
 
-        for (let i = 0; i < Players.length; i++) {
-          if(Players[i].fold != true){
-            handsArray[i] = Players[i].user_hand;
+        for (let i = 0; i < players.length; i++) {
+          if(players[i].fold != true){
+            handsArray[i] = players[i].user_hand;
           }
         }
         var handsValues  = new Map()
@@ -1043,15 +1093,15 @@ let back_call = 0;
 
           }
               for(var j = 0;j<length_of_kickers;j++){
-                var max = Players[users_with_equal_hands[0]].cardsStrengthArray[j];
+                var max = players[users_with_equal_hands[0]].cardsStrengthArray[j];
                 new_users_with_equal_hands.push(users_with_equal_hands[0]);
                 for (var i = 1; i < users_with_equal_hands.length; i++) {
-                  if(Players[users_with_equal_hands[i]].cardsStrengthArray[j] > max){
-                    max = Players[users_with_equal_hands[i]].cardsStrengthArray[j];
+                  if(players[users_with_equal_hands[i]].cardsStrengthArray[j] > max){
+                    max = players[users_with_equal_hands[i]].cardsStrengthArray[j];
                     new_users_with_equal_hands = [];
                     new_users_with_equal_hands.push(users_with_equal_hands[i]);
                   }
-                  else if(Players[users_with_equal_hands[i]].cardsStrengthArray[j] == max){
+                  else if(players[users_with_equal_hands[i]].cardsStrengthArray[j] == max){
                     new_users_with_equal_hands.push(users_with_equal_hands[i]);
                   }
                 }
@@ -1075,15 +1125,70 @@ let back_call = 0;
           userInt.displayWinningCards(users_with_equal_hands);
 
       },
+      identifyHandsForAllIn:function(iteration){
+        for (var i = 0; i < players.length; i++) {
+          if(players[i].all_in == true){
+            IdentifyPokerHands(flop_river_turn_cards,i,iteration,current_call);
+          }
+        }
+      },
       queue: function(){
 
           (function TheLoop(){
             if(back_call == current_call){
               if(counter == raise_index){
-                if(iteration < 3){
-                  cleanOutUserCall();
-                  if(anyPlayersLeft()){
-                    current_call = -1;
+                if(number_of_players_in_game ==2 && pre_flop == "start"){
+                  pre_flop = "end";
+                  $("#money-slider").attr("min",current_call+5);
+                  userInt.toggleButtons(players);
+                  i++;
+                  counter++;
+                  return;
+                }
+                else{
+                  if(iteration < 3){
+                    cleanOutUserCall();
+                    if(anyPlayersLeft()){
+                      current_call = -1;
+                    }
+                    else{
+                      setTimeout(function(){
+                          userInt.clearPotCoins();
+                          initialPositions.resetCoinsAnimation();
+                          howManyCoins(pot);
+                          userInt.updatePotValue();
+                          $(".player-decision").css("display","none");
+                      },500);
+                      userInt.animateCoins();
+                      return;
+                    }
+                    if(playersLeftAfterAllIn()){
+                      back_call = 0;
+                    }
+                    else{
+                      back_call = -1;
+                    }
+                    iteration++;
+                    raise_index = 1;
+                    counter = 1;
+                    i=1;
+                    userInt.animateCoins();
+                    setTimeout(function(){
+                        userInt.clearPotCoins();
+                        initialPositions.resetCoinsAnimation();
+                        howManyCoins(pot);
+                        userInt.updatePotValue();
+                        $(".player-decision").css("display","none");
+                    },500);
+                    setTimeout(function(){
+                      console.log("!!!!!!!!!!!!!!!!!!!!!");
+                      userInt.flop(flop_river_turn_cards,iteration);
+                      Cards.identifyHandsForAllIn(iteration);
+                      IdentifyPokerHands(flop_river_turn_cards,0,iteration,0);
+                      userInt.updateMoneySliderMaxValue();
+                      TheLoop();
+                    },2000);
+                    return;
                   }
                   else{
                     setTimeout(function(){
@@ -1094,66 +1199,30 @@ let back_call = 0;
                         $(".player-decision").css("display","none");
                     },500);
                     userInt.animateCoins();
+                    Cards.handSolver();
                     return;
                   }
-                  if(playersLeftAfterAllIn()){
-                    back_call = 0;
-                  }
-                  else{
-                    back_call = -1;
-                  }
-                  iteration++;
-                  raise_index = 1;
-                  counter = 1;
-                  i=1;
-                  userInt.animateCoins();
-                  setTimeout(function(){
-                      userInt.clearPotCoins();
-                      initialPositions.resetCoinsAnimation();
-                      howManyCoins(pot);
-                      userInt.updatePotValue();
-                      $(".player-decision").css("display","none");
-                  },500);
-                  setTimeout(function(){
-                    console.log("!!!!!!!!!!!!!!!!!!!!!");
-                    userInt.flop(flop_river_turn_cards,iteration);
-                    IdentifyPokerHands(flop_river_turn_cards,0,iteration,0);
-                    TheLoop();
-                  },2000);
-                  return;
-                }
-                else{
-                  setTimeout(function(){
-                      userInt.clearPotCoins();
-                      initialPositions.resetCoinsAnimation();
-                      howManyCoins(pot);
-                      userInt.updatePotValue();
-                      $(".player-decision").css("display","none");
-                  },500);
-                  userInt.animateCoins();
-                  Cards.handSolver();
-                  return;
                 }
               };
             };
 
 
-            if(Players[i].fold == true || Players[i].all_in == true)  {
+            if(players[i].fold == true || players[i].all_in == true)  {
                 counter +=1;
                 i += 1;
-                if(i< Players.length){
+                if(i< players.length){
                   TheLoop();
                 }
                 else{
                   i = 0;
                   counter = 0;
-                  if(Players[0].fold != true && Players[0].all_in != true){
+                  if(players[0].fold != true && players[0].all_in != true){
                     if(raise_index == counter){
                       TheLoop();
                     }
                     else{
                       $("#money-slider").attr("min",current_call+5);
-                      userInt.toggleButtons(Players);
+                      userInt.toggleButtons(players);
                     }
                   }
                   else{
@@ -1172,7 +1241,7 @@ let back_call = 0;
                     back_call = IdentifyPokerHands(flop_river_turn_cards,i,iteration,current_call);
                   }
                   else{
-                    back_call = playerChoice(Players[i],current_call,i,back_call);
+                    back_call = playerChoice(players[i],current_call,i,back_call);
                   }
                   userInt.showPlayerDecision(current_call,back_call,i);
                 };
@@ -1187,7 +1256,7 @@ let back_call = 0;
                 }
               counter +=1;
               i += 1;
-              if(i < Players.length)
+              if(i < players.length)
               {
                 TheLoop();
               }
@@ -1198,9 +1267,9 @@ let back_call = 0;
                   TheLoop();
                 }
                 else{
-                  if(Players[0].fold != true && Players[0].all_in != true ){
+                  if(players[0].fold != true && players[0].all_in != true ){
                     $("#money-slider").attr("min",current_call+5);
-                    userInt.toggleButtons(Players);
+                    userInt.toggleButtons(players);
                   }
                   else{
                     i = 1;
@@ -1209,26 +1278,25 @@ let back_call = 0;
                   }
                 }
               }
-            },800);
+            },700);
           };
           })();
         }
     }
-  })(UserInterface,initPositions);
+  })(UserInterface,InitPositions);
 
 
 
 
-  var controller  = (function(initPos,Cards,UserInter){
+  var Controller  = (function(InitPos,Cards,UserInter){
 
-    var n = 9;
-    var Players = Cards.players();
+    $(".button").toggle();
     $("#check").on("click",function(){
       back_call = -1;
     });
 
     $("#fold").on("click",function(){
-      Players[0].fold = true;
+      players[0].fold = true;
     });
 
     $("#call").on("click",function(){
@@ -1240,32 +1308,43 @@ let back_call = 0;
     });
 
     $("#all_in").on("click",function(){
-      Players[0].all_in = true;
+      players[0].all_in = true;
     });
 
     $(".button").on("click",function(){
-      UserInter.toggleButtons(Players);
+      UserInter.toggleButtons(players);
       Cards.mainPlayerChoice();
-      UserInter.updateMoneySliderMaxValue();
       UserInter.showPlayerDecision(current_call,back_call,0);
       Cards.queue();
     });
 
-    $(".deal-the-cards").on("click",function(){
-      $(".start-page").fadeOut(1000);
-      initPos.initCardsPositions(n);
-      setTimeout(function(){Cards.queue();},2500);
+    $("#money-slider").on("input",function(){
+      UserInter.updateRiseValue();
     });
-    Cards.createPlayers(n);
-    Cards.drawCard();
-    Cards.flopRiverTurn();
-    Cards.setMoneyToPlayers();
-    UserInter.showPlayerCards(n);
-    initPos.initialPositions(n);
-    UserInter.updateMoneySliderMaxValue();
-    $(".button").toggle();
-    $('.player-decision').toggle();
 
+    return{
+      init:function(){
+        Cards.createPlayers();
+        Cards.drawCard();
+        Cards.flopRiverTurn();
+        Cards.setMoneyToPlayers();
+        UserInter.displayUsers();
+        UserInter.showPlayerCards();
+        InitPos.initialPositions();
+        UserInter.updateMoneySliderMaxValue();
+      }
+    }
+  })(InitPositions,Cards,UserInterface);
 
-  })(initPositions,Cards,UserInterface);
+  $(".deal-the-cards").on("click",function(){
+    Controller.init();
+    $(".start-page").fadeOut(1000);
+    setTimeout(function(){
+      InitPositions.initCardsPositions();
+    },500);
+    setTimeout(function(){
+      Cards.queue();
+    },3500);
+  });
+
 });

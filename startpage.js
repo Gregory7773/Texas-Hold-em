@@ -1,4 +1,7 @@
+
+
 $(document).ready(function(){
+  var number_of_players_in_game;
   $(document).scroll(animateBar);
   $(document).scroll(animateSeparator);
   $(document).scroll(function(){
@@ -8,6 +11,20 @@ $(document).ready(function(){
   });
   $("svg").click(function(){slideshow(event);});
   $("#section_1_next_butt").click(nextSection);
+  $('.players').on({"click":function(){
+    number_of_players_in_game = $(this).attr("id");
+    localStorage.setItem('number',number_of_players_in_game);
+    $(".players").css("color","#cccccc");
+    $(this).css("color","#ffffff");
+  },
+    "mouseenter":function(){
+      $(this).css("backgroundColor","#888888");
+  },
+    "mouseleave":function(){
+      $(this).css("backgroundColor","#5c5c59");
+  }
+});
+
 
   var counter = 1;
 
@@ -78,5 +95,6 @@ $(document).ready(function(){
     $("#section1").css({"transform": "translateX(-100%)", "opacity": "0"});
     $("#section2").css({"transform": "translateX(-100%)", "opacity": "1"});
   }
+
 
 });
