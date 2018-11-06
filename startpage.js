@@ -2,6 +2,8 @@
 
 $(document).ready(function(){
   var number_of_players_in_game;
+  var big_blind_number=0;
+  var big_blind;
   $(document).scroll(animateBar);
   $(document).scroll(animateSeparator);
   $(document).scroll(function(){
@@ -10,7 +12,10 @@ $(document).ready(function(){
     };
   });
   $("svg").click(function(){slideshow(event);});
-  $("#section_1_next_butt").click(nextSection);
+  $("#section_1_next_butt").click(function(){
+    chooseBigBlind();
+    nextSection();
+  });
   $('.players').on({"click":function(){
     number_of_players_in_game = $(this).attr("id");
     localStorage.setItem('number',number_of_players_in_game);
@@ -24,12 +29,53 @@ $(document).ready(function(){
       $(this).css("backgroundColor","#5c5c59");
   }
 });
-
+$('.right_arrow').on("click",function(){
+  big_blind_number++;
+  if(big_blind_number>7){
+    big_blind_number=0;
+  }
+  console.log(big_blind_number);
+});
+$('.left_arrow').on("click",function(){
+  big_blind_number--;
+  if(big_blind_number<0){
+    big_blind_number=7;
+  }
+  console.log(big_blind_number);
+});
 
   var counter = 1;
 
 
-
+  function chooseBigBlind(){
+    switch(big_blind_number){
+      case 0:
+        big_blind = 10;
+        break;
+      case 1:
+        big_blind = 20;
+        break;
+      case 2:
+        big_blind = 50;
+        break;
+      case 3:
+        big_blind = 100;
+        break;
+      case 4:
+        big_blind = 200;
+        break;
+      case 5:
+        big_blind = 500;
+        break;
+      case 6:
+        big_blind = 750;
+        break;
+      case 7:
+        big_blind = 1000;
+        break;
+    }
+    localStorage.setItem('big_blind',big_blind);
+  }
   function animateBar(){
 
     if($(window).scrollTop() > 70){
