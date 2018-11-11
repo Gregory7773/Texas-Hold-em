@@ -4,6 +4,7 @@ $(document).ready(function(){
   var number_of_players_in_game;
   var big_blind_number=0;
   var big_blind;
+
   $(document).scroll(animateBar);
   $(document).scroll(animateSeparator);
   $(document).scroll(function(){

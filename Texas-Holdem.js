@@ -5,16 +5,18 @@ $(document).ready(function(){
   var big_blind = Number(localStorage.getItem('big_blind'));
   var entry_fee = big_blind*100;
   if(number_of_players_in_game ==2){
+    var starting_player = 0;
     var i = 0;
-    var raise_index = 0;
     var counter = 0;
+    var raise_index = 0;
     var back_call = big_blind;
     var pre_flop = "start";
   }
   else{
+    var starting_player = 3;
     var i = 3;
-    var raise_index = 3;
     var counter = 3;
+    var raise_index = 3;
   }
 
   var iteration = 0;
@@ -22,7 +24,12 @@ $(document).ready(function(){
   var pot = 0;
   var current_call = big_blind;
   var back_call;
-
+  var is_user_3_dealer = false;
+  var calls = 0;
+function iSuspectToBeLoopingInfititely() {
+  calls += 1;
+  if (calls > 300) { debugger; }
+}
 
 
   var InitPositions = (function(){
@@ -101,7 +108,7 @@ $(document).ready(function(){
       else if(number_of_players_in_game == 6){
         $("#user-1-coins").css({"top":"139%","left":"52%"});
         $("#user-2-coins").css({"top":"114%","left":"10%"});
-        $("#user-3-coins").css({"top":"34%","left":"-6%"});
+        $("#user-3-coins").css({"top":"12%","left":"7%"});
         $("#user-4-coins").css({"top":"-19%","left":"70%"});
         $("#user-5-coins").css({"top":"30%","left":"113%"});
         $("#user-6-coins").css({"top":"114%","left":"90%"});
@@ -159,7 +166,7 @@ $(document).ready(function(){
           $(".middle-container-relative").append('<div class = "coins_wrapper" id = "user-'+i+'-coins"><div class = "user-coins" id = "coin-user-'+i+'"></div></div>');
         }
       },
-      showPlayerCards: function(){
+      addPlayersCards: function(){
         var insertCardHTML = '<img class = "card" id="'+players[0].Card1x+'-'+players[0].Card1y+'" src = "images/cards/'+players[0].Card1x+'-'+players[0].Card1y+'.png">';
         $("#player").before(insertCardHTML);
 
@@ -173,6 +180,11 @@ $(document).ready(function(){
           $("#player").before('<img class = "card" id="'+players[i].Card2x+'-'+players[i].Card2y+'" src = "images/cards/card back.png">');
         }
         animateCards();
+      },
+      addCommonCards:function(common_cards){
+        for (var i = 0; i< 5; i++) {
+          $(".flop-river-turn-relative").append('<img class = "common-card" id="'+common_cards[i]+'" src = "images/cards/'+common_cards[i]+'.png">');
+        }
       },
       toggleButtons: function(players){
         if(current_call == -1){
@@ -190,7 +202,7 @@ $(document).ready(function(){
 
         }
       },
-      flop: function(cards,iteration){
+      showCommonCard: function(cards,iteration){
         if(iteration == 1){
           for (var i = 0; i < 3; i++) {
             $(".common-card").eq(i).css({opacity:1,left:110*i+"px"});
@@ -272,7 +284,12 @@ $(document).ready(function(){
           if(iteration_number<winners.length){Repeat();}
         },2000);
       })();
-      }
+      setTimeout(()=>{Controller.nextRound();},5000);
+    },
+    resetCards: function(){
+      $(".card").remove();
+      $('.flop-river-turn-relative').empty();
+    }
     }
   })();
   function ifPlayerDontWantToCheck(current_call){
@@ -580,7 +597,9 @@ if(hands.straight[0] == true && hands.flush[0] == true){
       }
       current_call = ifPlayerDontWantToCheck(current_call);
       console.log(player_number+" royal_flush" );
-      back_call = player.money;
+      if(current_call<player.money){
+        back_call = player.money;
+      }
       player.all_in = true;
       Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
       return back_call;
@@ -594,7 +613,9 @@ if(hands.straight[0] == true && hands.flush[0] == true){
       }
       current_call = ifPlayerDontWantToCheck(current_call);
       console.log(player_number+" straigth_flush" );
-      back_call = player.money;
+      if(current_call<player.money){
+        back_call = player.money;
+      }
       player.all_in = true;
       Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
       return back_call;
@@ -608,7 +629,9 @@ if(hands.straight[0] == true && hands.flush[0] == true){
       }
       current_call = ifPlayerDontWantToCheck(current_call);
       console.log(player_number+" four_of_a_kind" );
-      back_call = player.money;
+      if(current_call<player.money){
+        back_call = player.money;
+      }
       player.all_in = true;
       Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
       return back_call;
@@ -622,7 +645,9 @@ if(hands.straight[0] == true && hands.flush[0] == true){
       }
       current_call = ifPlayerDontWantToCheck(current_call);
       console.log(player_number+" full_house");
-      back_call = player.money;
+      if(current_call<player.money){
+        back_call = player.money;
+      }
       player.all_in = true;
       Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
       return back_call;
@@ -636,7 +661,9 @@ if(hands.straight[0] == true && hands.flush[0] == true){
       }
       current_call = ifPlayerDontWantToCheck(current_call);
       console.log(player_number+" flush");
-      back_call = player.money;
+      if(current_call<player.money){
+        back_call = player.money;
+      }
       player.all_in = true;
       Cards.playerMoneyUpdate(player,current_call,player_number,back_call);
       return back_call;
@@ -655,7 +682,6 @@ if(hands.straight[0] == true && hands.flush[0] == true){
       }
       else{
         if(current_call>=player.money){
-          back_call = player.money;
           player.all_in = true;
         }
         else{
@@ -680,7 +706,6 @@ if(hands.straight[0] == true && hands.flush[0] == true){
       }
       else{
         if(current_call>=player.money){
-          back_call = player.money;
           player.all_in = true;
         }
         else{
@@ -761,7 +786,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
     }
 }
 
-  var Cards = (function(userInt,initialPositions){
+  var Cards = (function(Userinter,initialPositions){
 
     var x,y;
     var time_out_variable = 1;
@@ -780,11 +805,11 @@ if(hands.straight[0] == true && hands.flush[0] == true){
 
     };
 
-    var RandomCards = [];
-    var flop_river_turn_cards = [];
+    var randomCards = [];
+    var common_cards = [];
 
 
-    function flopRiverTurnDraw(){
+    function drawCommonCards(){
       var one,two,three,four,joined,is_repeat;
       for(var i =0; i<5;i++){
         do {
@@ -792,17 +817,13 @@ if(hands.straight[0] == true && hands.flush[0] == true){
           one = Math.round((Math.random()*12)+2);
           two = Math.round((Math.random()*3)+1);
           joined = one+"-"+two;
-          RandomCards.forEach(function(element){
+          randomCards.forEach(function(element){
             if(joined == element){is_repeat=true;}
           })
         } while (is_repeat);
-        flop_river_turn_cards.push(joined);
-        RandomCards.push(joined);
+        common_cards.push(joined);
+        randomCards.push(joined);
       }
-      for (var i = 0; i< 5; i++) {
-        $(".flop-river-turn-relative").append('<img class = "common-card" id="'+flop_river_turn_cards[i]+'" src = "images/cards/'+flop_river_turn_cards[i]+'.png">');
-      }
-
     };
 
 
@@ -814,11 +835,11 @@ if(hands.straight[0] == true && hands.flush[0] == true){
         one = Math.round((Math.random()*12)+2);
         two = Math.round((Math.random()*3)+1);
         joined = one+"-"+two;
-        RandomCards.forEach(function(element){
+        randomCards.forEach(function(element){
           if(joined == element){is_repeat=true;}
         })
       } while (is_repeat);
-      RandomCards.push(joined);
+      randomCards.push(joined);
 
       this.Card1x = one;
       this.Card1y = two;
@@ -827,13 +848,21 @@ if(hands.straight[0] == true && hands.flush[0] == true){
         three = Math.round((Math.random()*12)+2);
         four = Math.round((Math.random()*3)+1);
         joined = three+"-"+four;
-        RandomCards.forEach(function(element){
+        randomCards.forEach(function(element){
           if(joined == element){is_repeat=true;}
         })
       } while (is_repeat);
-      RandomCards.push(joined);
+      randomCards.push(joined);
       this.Card2x = three;
       this.Card2y = four;
+    };
+    player.prototype.cleanPlayer = function(){
+      this.fold = false;
+      this.user_call = 0;
+      this.all_in = false;
+      this.user_hand = [];
+      this.hand_cards =  [];
+      this.cardsStrengthArray = [];
     };
 
     function playerChoice(element,current_call,player_id){
@@ -945,15 +974,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
       })
       }
 
-    function payInBlinds(){
-      var small_blind = big_blind/2;
-      Players[i-2].money -= small_blind
-      howManyCoins(small_blind,i-2);
-      Players[i-1].money -= big_blind;
-      howManyCoins(big_blind,i-1);
-      howManyCoins(pot);
-      userInt.updatePotValue();
-    }
+
     function anyPlayersLeft(){
       var players_left = 0;
       players.forEach(function(element){
@@ -990,6 +1011,22 @@ if(hands.straight[0] == true && hands.flush[0] == true){
     };
 
     return{
+        clearRandomAndCommonCards:function(){
+          randomCards = [];
+          common_cards = [];
+        },
+        addCashToPlayers:function(){
+          for (let i = 1; i < players.length; i++) {
+            if(players[i].money ==0){
+              players[i].money += entry_fee;
+            }
+          }
+        },
+        cleanPlayers:function(){
+        players.forEach((element)=>{
+          element.cleanPlayer();
+        })
+      },
         payInBlinds:function(){
         var small_blind = big_blind/2;
         var small_blind_player,big_blind_player;
@@ -1034,23 +1071,30 @@ if(hands.straight[0] == true && hands.flush[0] == true){
 
         players[small_blind_player].money -= small_blind;
         players[small_blind_player].user_call = small_blind;
-        userInt.updatePlayerMoney(small_blind_player);
+        Userinter.updatePlayerMoney(small_blind_player);
         howManyCoins(small_blind,small_blind_player);
         players[big_blind_player].money -= big_blind;
         players[big_blind_player].user_call = big_blind;
-        userInt.updatePlayerMoney(big_blind_player);
+        Userinter.updatePlayerMoney(big_blind_player);
         howManyCoins(big_blind,big_blind_player);
         pot+=big_blind+small_blind;
         howManyCoins(pot);
-        userInt.updatePotValue();
+        Userinter.updatePotValue();
 
       },
        playerMoneyUpdate:function(element,current_call,player_id,back_call){
-         let separate_call = back_call - element.user_call;
+         let separate_call;
+         if(element.all_in == true){
+            separate_call = element.money;
+         }
+         else{
+            separate_call = back_call - element.user_call;
+         }
          pot += separate_call;
          element.money -= separate_call;
          console.log(player_id+" "+back_call);
-         userInt.updatePlayerMoney(player_id);
+         console.log(players);
+         Userinter.updatePlayerMoney(player_id);
          howManyCoins(separate_call,player_id);
          element.user_call =back_call;
        },
@@ -1070,7 +1114,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
           pot += separate_call;
           players[0].money -= separate_call;
           console.log("Player 0: "+back_call);
-          userInt.updatePlayerMoney(0);
+          Userinter.updatePlayerMoney(0);
           howManyCoins(separate_call,0);
           players[0].user_call = back_call;
           return;
@@ -1093,7 +1137,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
       },
 
       flopRiverTurn: function(){
-        flopRiverTurnDraw();
+        drawCommonCards();
       },
       setMoneyToPlayers: function(){
         players.forEach(function(element){
@@ -1193,89 +1237,96 @@ if(hands.straight[0] == true && hands.flush[0] == true){
             winner = users_with_equal_hands[0];
             console.log("winner: "+winner);
           }
-          userInt.displayWinningCards(users_with_equal_hands);
+          Userinter.displayWinningCards(users_with_equal_hands);
 
       },
       identifyHandsForAllIn:function(iteration){
         for (var i = 0; i < players.length; i++) {
           if(players[i].all_in == true){
-            IdentifyPokerHands(flop_river_turn_cards,i,iteration,current_call);
+            IdentifyPokerHands(common_cards,i,iteration,current_call);
           }
         }
+      },
+      getCommonCards:function(){
+        return common_cards;
       },
       queue: function(){
 
           (function TheLoop(){
-            if(back_call == current_call){
-              if(counter == raise_index){
-                if(number_of_players_in_game ==2 && pre_flop == "start"){
-                  pre_flop = "end";
-                  $("#money-slider").attr("min",current_call+5);
-                  userInt.toggleButtons(players);
-                  return;
-                }
-                else{
-                  if(iteration < 3){
-                    cleanOutUserCall();
-                    if(anyPlayersLeft()){
-                      current_call = -1;
-                    }
-                    else{
-                      setTimeout(function(){
-                          userInt.clearPotCoins();
-                          initialPositions.resetCoinsAnimation();
-                          howManyCoins(pot);
-                          userInt.updatePotValue();
-                          $(".player-decision").css("display","none");
-                      },500);
-                      userInt.animateCoins();
-                      return;
-                    }
-                    if(playersLeftAfterAllIn()){
-                      back_call = 0;
-                    }
-                    else{
-                      back_call = -1;
-                    }
-                    iteration++;
-                    raise_index = 1;
-                    counter = 1;
-                    i=1;
-                    userInt.animateCoins();
-                    setTimeout(function(){
-                        userInt.clearPotCoins();
-                        initialPositions.resetCoinsAnimation();
-                        howManyCoins(pot);
-                        userInt.updatePotValue();
-                        $(".player-decision").css("display","none");
-                    },500);
-                    setTimeout(function(){
-                      console.log("!!!!!!!!!!!!!!!!!!!!!");
-                      userInt.flop(flop_river_turn_cards,iteration);
-                      Cards.identifyHandsForAllIn(iteration);
-                      IdentifyPokerHands(flop_river_turn_cards,0,iteration,0);
-                      userInt.updateMoneySliderMaxValue();
-                      TheLoop();
-                    },2000);
+            iSuspectToBeLoopingInfititely();
+            if(!is_user_3_dealer){
+              if(back_call == current_call){
+                if(counter == raise_index){
+                  if(number_of_players_in_game ==2 && pre_flop == "start"){
+                    pre_flop = "end";
+                    $("#money-slider").attr("min",current_call+5);
+                    Userinter.toggleButtons(players);
                     return;
                   }
                   else{
-                    setTimeout(function(){
-                        userInt.clearPotCoins();
-                        initialPositions.resetCoinsAnimation();
-                        howManyCoins(pot);
-                        userInt.updatePotValue();
-                        $(".player-decision").css("display","none");
-                    },500);
-                    userInt.animateCoins();
-                    Cards.handSolver();
-                    return;
+                    if(iteration < 3){
+                      cleanOutUserCall();
+                      if(anyPlayersLeft()){
+                        current_call = -1;
+                      }
+                      else{
+                        setTimeout(function(){
+                            Userinter.clearPotCoins();
+                            initialPositions.resetCoinsAnimation();
+                            howManyCoins(pot);
+                            Userinter.updatePotValue();
+                            $(".player-decision").css("display","none");
+                        },500);
+                        Userinter.animateCoins();
+                        return;
+                      }
+                      if(playersLeftAfterAllIn()){
+                        back_call = 0;
+                      }
+                      else{
+                        back_call = -1;
+                      }
+                      iteration++;
+                      raise_index = 1;
+                      counter = 1;
+                      i=1;
+                      Userinter.animateCoins();
+                      setTimeout(function(){
+                          Userinter.clearPotCoins();
+                          initialPositions.resetCoinsAnimation();
+                          howManyCoins(pot);
+                          Userinter.updatePotValue();
+                          $(".player-decision").css("display","none");
+                      },500);
+                      setTimeout(function(){
+                        console.log("!!!!!!!!!!!!!!!!!!!!!");
+                        Userinter.showCommonCard(common_cards,iteration);
+                        Cards.identifyHandsForAllIn(iteration);
+                        IdentifyPokerHands(common_cards,0,iteration,0);
+                        Userinter.updateMoneySliderMaxValue();
+                        TheLoop();
+                      },2000);
+                      return;
+                    }
+                    else{
+                      setTimeout(function(){
+                          Userinter.clearPotCoins();
+                          initialPositions.resetCoinsAnimation();
+                          howManyCoins(pot);
+                          Userinter.updatePotValue();
+                          $(".player-decision").css("display","none");
+                      },500);
+                      Userinter.animateCoins();
+                      Cards.handSolver();
+                      return;
+                    }
                   }
-                }
+                };
               };
             };
 
-
+            is_user_3_dealer = false;
+            
             if(players[i].fold == true || players[i].all_in == true)  {
                 counter +=1;
                 i += 1;
@@ -1291,7 +1342,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
                     }
                     else{
                       $("#money-slider").attr("min",current_call+5);
-                      userInt.toggleButtons(players);
+                      Userinter.toggleButtons(players);
                     }
                   }
                   else{
@@ -1307,12 +1358,12 @@ if(hands.straight[0] == true && hands.flush[0] == true){
 
                 if(i>0){
                   if(iteration>0){
-                    back_call = IdentifyPokerHands(flop_river_turn_cards,i,iteration,current_call);
+                    back_call = IdentifyPokerHands(common_cards,i,iteration,current_call);
                   }
                   else{
                     back_call = playerChoice(players[i],current_call,i,back_call);
                   }
-                  userInt.showPlayerDecision(current_call,back_call,i);
+                  Userinter.showPlayerDecision(current_call,back_call,i);
                 };
 
 
@@ -1338,7 +1389,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
                 else{
                   if(players[0].fold != true && players[0].all_in != true ){
                     $("#money-slider").attr("min",current_call+5);
-                    userInt.toggleButtons(players);
+                    Userinter.toggleButtons(players);
                   }
                   else{
                     i = 1;
@@ -1347,7 +1398,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
                   }
                 }
               }
-            },700);
+            },70);
           };
           })();
         }
@@ -1391,6 +1442,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
     $("#money-slider").on("input",function(){
       UserInter.updateRiseValue();
     });
+    var common_cards = Cards.getCommonCards();
 
     return{
       init:function(){
@@ -1398,11 +1450,58 @@ if(hands.straight[0] == true && hands.flush[0] == true){
         Cards.drawCard();
         Cards.flopRiverTurn();
         Cards.setMoneyToPlayers();
+        UserInter.addCommonCards(common_cards);
         UserInter.displayUsers();
         UserInter.displayCoinsContainers();
-        UserInter.showPlayerCards();
+        UserInter.addPlayersCards();
         InitPos.initialPositions();
         UserInter.updateMoneySliderMaxValue();
+      },
+      nextRound:function(){
+        if(number_of_players_in_game ==2){
+          starting_player = (starting_player ==1) ? 0:1;
+        }
+        else{
+          if(starting_player == players.length-1){
+            starting_player = 0;
+            is_user_3_dealer = true;
+          }
+          else{
+            starting_player++;
+          }
+        }
+        i = starting_player;
+        counter= starting_player;
+        raise_index = starting_player;
+        pre_flop = "start";
+        iteration = 0;
+        pot = 0;
+        current_call = big_blind;
+        back_call = undefined;
+        Cards.cleanPlayers();
+        Cards.addCashToPlayers();
+        Cards.clearRandomAndCommonCards();
+        Cards.drawCard();
+        Cards.flopRiverTurn();
+        common_cards = Cards.getCommonCards();
+        UserInter.resetCards();
+        UserInter.addCommonCards(common_cards);
+        UserInter.addPlayersCards();
+        UserInter.updatePotValue();
+        UserInter.clearPotCoins();
+        UserInter.updateMoneySliderMaxValue();
+        setTimeout(function(){
+          InitPositions.initCardsPositions();
+        },500);
+        setTimeout(function(){
+          Cards.payInBlinds();
+          if(starting_player ==0){
+            $("#money-slider").attr("min",current_call+5);
+            UserInter.toggleButtons(players);
+            return;
+          }
+          else{Cards.queue();}
+        },3500);
       }
     }
   })(InitPositions,Cards,UserInterface);
