@@ -13,10 +13,10 @@ $(document).ready(function(){
     var pre_flop = "start";
   }
   else{
-    var starting_player = 3;
-    var i = 3;
-    var counter = 3;
-    var raise_index = 3;
+    var starting_player = 2;
+    var i = 2;
+    var counter = 2;
+    var raise_index = 2;
   }
 
   var iteration = 0;
@@ -24,12 +24,7 @@ $(document).ready(function(){
   var pot = 0;
   var current_call = big_blind;
   var back_call;
-  var is_user_3_dealer = false;
-  var calls = 0;
-function iSuspectToBeLoopingInfititely() {
-  calls += 1;
-  if (calls > 300) { debugger; }
-}
+  var main_user_on_first_call = false;
 
 
   var InitPositions = (function(){
@@ -119,7 +114,7 @@ function iSuspectToBeLoopingInfititely() {
         $("#user-3-coins").css({"top":"34%","left":"-6%"});
         $("#user-4-coins").css({"top":"-10%","left":"10%"});
         $("#user-5-coins").css({"top":"-23%","left":"70%"});
-        $("#user-6-coins").css({"top":"-8%","left":"110%"});
+        $("#user-6-coins").css({"top":"9%","left":"98%"});
         $("#user-7-coins").css({"top":"57%","left":"115%"});
         $("#user-8-coins").css({"top":"120%","left":"96%"});
       }
@@ -282,9 +277,10 @@ function iSuspectToBeLoopingInfititely() {
           }
           iteration_number++;
           if(iteration_number<winners.length){Repeat();}
+          else{setTimeout(()=>{Controller.nextRound();},3000);}
         },2000);
       })();
-      setTimeout(()=>{Controller.nextRound();},5000);
+
     },
     resetCards: function(){
       $(".card").remove();
@@ -373,8 +369,8 @@ function pushCardsToPlayersHandForStraightAndFlush(hand_numbers,suit_number,card
     return kickers;
   }
   function removeRepeatingKickersForStraight(numbers){
-    var is_repeat = false;
     do{
+      var is_repeat = false;
       for (var i = 0; i < numbers.length; i++) {
         if(numbers[i] == numbers[i+1]){
           numbers.splice(i,1);
@@ -589,7 +585,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
 
 //how much money bet
 
-  let back_call = 0;
+
     if(hands.royal_flush[0] ==true){
       player.user_hand = "royal_flush";
       if(player_number == 0 || player.all_in == true){
@@ -607,7 +603,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
     else if(hands.straight_flush[0] ==true){
       player.user_hand = "straigth_flush";
       hands.straight_flush.shift();
-      player.cardsStrengthArray = hands.straigth_flush;
+      player.cardsStrengthArray = hands.straight_flush;
       if(player_number == 0 || player.all_in == true){
         return;
       }
@@ -868,7 +864,8 @@ if(hands.straight[0] == true && hands.flush[0] == true){
     function playerChoice(element,current_call,player_id){
       var back_call;
       if((element.Card1x == element.Card2x)&&(element.Card1x > 7)){
-        back_call = element.money;
+        if(current_call<element.money){back_call = element.money;}
+        else{back_call = current_call;}
         element.all_in = true;
         Cards.playerMoneyUpdate(element,current_call,player_id,back_call);
         return back_call;
@@ -1009,7 +1006,29 @@ if(hands.straight[0] == true && hands.flush[0] == true){
         element.user_call = 0;
       })
     };
+    function playerAfterDealer(){
 
+        if(starting_player == 2 && back_call == 0){
+          main_user_on_first_call = true;
+          $("#money-slider").attr("min",current_call+5);
+          Userinter.toggleButtons(players);
+        }
+        if(starting_player ==0){
+          raise_index = number_of_players_in_game-2;
+          counter = number_of_players_in_game-2;
+          i= number_of_players_in_game-2;
+        }
+        else if(starting_player ==1){
+          raise_index = number_of_players_in_game-1;
+          counter = number_of_players_in_game-1;
+          i = number_of_players_in_game-1;
+        }
+        else{
+          raise_index = starting_player-2;
+          counter = starting_player -2;
+          i=starting_player-2;
+        }
+    }
     return{
         clearRandomAndCommonCards:function(){
           randomCards = [];
@@ -1253,8 +1272,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
       queue: function(){
 
           (function TheLoop(){
-            iSuspectToBeLoopingInfititely();
-            if(!is_user_3_dealer){
+            if(!main_user_on_first_call){
               if(back_call == current_call){
                 if(counter == raise_index){
                   if(number_of_players_in_game ==2 && pre_flop == "start"){
@@ -1287,9 +1305,6 @@ if(hands.straight[0] == true && hands.flush[0] == true){
                         back_call = -1;
                       }
                       iteration++;
-                      raise_index = 1;
-                      counter = 1;
-                      i=1;
                       Userinter.animateCoins();
                       setTimeout(function(){
                           Userinter.clearPotCoins();
@@ -1300,10 +1315,12 @@ if(hands.straight[0] == true && hands.flush[0] == true){
                       },500);
                       setTimeout(function(){
                         console.log("!!!!!!!!!!!!!!!!!!!!!");
+                        playerAfterDealer();
                         Userinter.showCommonCard(common_cards,iteration);
                         Cards.identifyHandsForAllIn(iteration);
                         IdentifyPokerHands(common_cards,0,iteration,0);
                         Userinter.updateMoneySliderMaxValue();
+                        if(main_user_on_first_call == true){return;}
                         TheLoop();
                       },2000);
                       return;
@@ -1325,8 +1342,8 @@ if(hands.straight[0] == true && hands.flush[0] == true){
               };
             };
 
-            is_user_3_dealer = false;
-            
+            main_user_on_first_call = false;
+
             if(players[i].fold == true || players[i].all_in == true)  {
                 counter +=1;
                 i += 1;
@@ -1464,7 +1481,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
         else{
           if(starting_player == players.length-1){
             starting_player = 0;
-            is_user_3_dealer = true;
+            main_user_on_first_call = true;
           }
           else{
             starting_player++;
