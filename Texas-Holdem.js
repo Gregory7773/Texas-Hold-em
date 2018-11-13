@@ -243,8 +243,14 @@ $(document).ready(function(){
       clearPotCoins:function(){
         $(".coins-pot-wrapper").empty();
       },
-      updateMoneySliderMaxValue:function(){
+      updateMoneySliderMinMaxValue:function(){
+        var min;
         $("#money-slider").attr("max",players[0].money);
+        if(current_call == -1){min = 5;}
+        else{min = current_call +5;}
+        $("#money-slider").attr("min",min);
+        $("#money-slider").val(min);
+        $("#raise").html("RAISE "+min);
       },
       updateRiseValue: function(){
         var val = $("#money-slider").val();
@@ -1008,9 +1014,9 @@ if(hands.straight[0] == true && hands.flush[0] == true){
     };
     function playerAfterDealer(){
 
-        if(starting_player == 2 && back_call == 0){
+        if(starting_player == 2 && back_call == 0 && players[0].fold != true && players[0].all_in != true){
           main_user_on_first_call = true;
-          $("#money-slider").attr("min",current_call+5);
+          Userinter.updateMoneySliderMinMaxValue();
           Userinter.toggleButtons(players);
         }
         if(starting_player ==0){
@@ -1035,11 +1041,9 @@ if(hands.straight[0] == true && hands.flush[0] == true){
           common_cards = [];
         },
         addCashToPlayers:function(){
-          for (let i = 1; i < players.length; i++) {
-            if(players[i].money ==0){
-              players[i].money += entry_fee;
-            }
-          }
+          players.forEach((element)=>{
+            if(element.money ==0){element.money = entry_fee};
+          })
         },
         cleanPlayers:function(){
         players.forEach((element)=>{
@@ -1103,24 +1107,26 @@ if(hands.straight[0] == true && hands.flush[0] == true){
       },
        playerMoneyUpdate:function(element,current_call,player_id,back_call){
          let separate_call;
-         if(element.all_in == true){
-            separate_call = element.money;
+         if(back_call != -1){
+           if(element.all_in == true){
+              separate_call = element.money;
+           }
+           else{
+              separate_call = back_call - element.user_call;
+           }
+           pot += separate_call;
+           element.money -= separate_call;
+           console.log(player_id+" "+back_call);
+           console.log(players);
+           Userinter.updatePlayerMoney(player_id);
+           howManyCoins(separate_call,player_id);
+           element.user_call =back_call;
          }
-         else{
-            separate_call = back_call - element.user_call;
-         }
-         pot += separate_call;
-         element.money -= separate_call;
-         console.log(player_id+" "+back_call);
-         console.log(players);
-         Userinter.updatePlayerMoney(player_id);
-         howManyCoins(separate_call,player_id);
-         element.user_call =back_call;
        },
 
       mainPlayerChoice: function(){
         let separate_call;
-        if(players[0].fold == true){
+        if(players[0].fold == true || back_call == -1){
           return;
         }
         else{
@@ -1277,7 +1283,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
                 if(counter == raise_index){
                   if(number_of_players_in_game ==2 && pre_flop == "start"){
                     pre_flop = "end";
-                    $("#money-slider").attr("min",current_call+5);
+                    Userinter.updateMoneySliderMinMaxValue();
                     Userinter.toggleButtons(players);
                     return;
                   }
@@ -1319,7 +1325,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
                         Userinter.showCommonCard(common_cards,iteration);
                         Cards.identifyHandsForAllIn(iteration);
                         IdentifyPokerHands(common_cards,0,iteration,0);
-                        Userinter.updateMoneySliderMaxValue();
+                        Userinter.updateMoneySliderMinMaxValue();
                         if(main_user_on_first_call == true){return;}
                         TheLoop();
                       },2000);
@@ -1358,7 +1364,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
                       TheLoop();
                     }
                     else{
-                      $("#money-slider").attr("min",current_call+5);
+                      Userinter.updateMoneySliderMinMaxValue();
                       Userinter.toggleButtons(players);
                     }
                   }
@@ -1405,7 +1411,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
                 }
                 else{
                   if(players[0].fold != true && players[0].all_in != true ){
-                    $("#money-slider").attr("min",current_call+5);
+                    Userinter.updateMoneySliderMinMaxValue();
                     Userinter.toggleButtons(players);
                   }
                   else{
@@ -1415,7 +1421,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
                   }
                 }
               }
-            },70);
+            },200);
           };
           })();
         }
@@ -1442,7 +1448,12 @@ if(hands.straight[0] == true && hands.flush[0] == true){
 
     $("#raise").on("click",function(){
       back_call = Number($("#money-slider").val());
-
+      if(back_call == players[0].money){
+        players[0].all_in = true;
+        current_call = back_call;
+        raise_index = i;
+        main_user_on_first_call = true;
+      }
     });
 
     $("#all_in").on("click",function(){
@@ -1472,7 +1483,7 @@ if(hands.straight[0] == true && hands.flush[0] == true){
         UserInter.displayCoinsContainers();
         UserInter.addPlayersCards();
         InitPos.initialPositions();
-        UserInter.updateMoneySliderMaxValue();
+        UserInter.updateMoneySliderMinMaxValue();
       },
       nextRound:function(){
         if(number_of_players_in_game ==2){
@@ -1501,19 +1512,22 @@ if(hands.straight[0] == true && hands.flush[0] == true){
         Cards.drawCard();
         Cards.flopRiverTurn();
         common_cards = Cards.getCommonCards();
+        for(let c =0;c<number_of_players_in_game;c++){
+          UserInter.updatePlayerMoney(c);
+        }
         UserInter.resetCards();
         UserInter.addCommonCards(common_cards);
         UserInter.addPlayersCards();
         UserInter.updatePotValue();
         UserInter.clearPotCoins();
-        UserInter.updateMoneySliderMaxValue();
+        UserInter.updateMoneySliderMinMaxValue();
         setTimeout(function(){
           InitPositions.initCardsPositions();
         },500);
         setTimeout(function(){
           Cards.payInBlinds();
           if(starting_player ==0){
-            $("#money-slider").attr("min",current_call+5);
+            UserInter.updateMoneySliderMinMaxValue();
             UserInter.toggleButtons(players);
             return;
           }
